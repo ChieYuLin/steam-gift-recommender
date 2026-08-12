@@ -295,7 +295,16 @@ def recommend(games, excluded_ids=None, evidence_use_counts=None, priority="bala
     if not ranked:
         raise ValueError("当前商店候选已全部看过。请稍后再试，或重新开始一次查询。")
     # Explicit priorities stay within their selected storefront category across refreshes.
-    if priority != "balanced":
+    # Hot sellers are a shallow live storefront list. Once it is exhausted, fall
+    # back to the deeper high-rated pool without relabeling those games as hot.
+    if priority == "top_sellers":
+        pool = [game for game in ranked if game.get("store_category") == priority]
+        if not pool:
+            pool = [game for game in ranked if game.get("store_category") == "highly_rated"]
+        if not pool:
+            raise ValueError("热销和高评价精选中都没有更多未展示的游戏。请重新开始查询或选择其他优先级。")
+        pool = pool[:12]
+    elif priority != "balanced":
         pool = [game for game in ranked if game.get("store_category") == priority]
         if not pool:
             raise ValueError("该商店分类中没有更多未展示的游戏。请重新开始查询或选择其他优先级。")
