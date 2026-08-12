@@ -20,6 +20,9 @@ STORE_HEADERS = {"User-Agent": "Gift Scout/1.0 (+local Steam gift recommender)"}
 STORE_CACHE_SECONDS = 1800
 CATALOG_SNAPSHOT_PATH = Path(app.root_path) / "data" / "store_catalog_cn.json"
 store_catalog_cache = {"modified_at": None, "games": []}
+SEARCH_PAGE_COUNT = 3
+SEARCH_PAGE_SIZE = 50
+MIN_CATALOG_SIZE = 150
 CATALOG = [
     {"app_id": 413150, "name": "Stardew Valley", "genres": ["indie", "simulation", "rpg"], "price_note": "通常价格亲民", "image": "https://cdn.cloudflare.steamstatic.com/steam/apps/413150/header.jpg"},
     {"app_id": 1245620, "name": "ELDEN RING", "genres": ["action", "rpg"], "price_note": "适合大作预算", "image": "https://cdn.cloudflare.steamstatic.com/steam/apps/1245620/header.jpg"},
@@ -168,8 +171,19 @@ def get_store_game_details(item, source, category_id, include_reviews=True):
 
 
 def get_store_search_items(search_params):
-    payload = store_json("/search/results/", {"query": "", "start": 0, "count": 50, "dynamic_data": "", "infinite": 1, "cc": "cn", **search_params})
-    app_ids = re.findall(r'data-ds-appid=\\?"(\d+)', payload.get("results_html", ""))
+    app_ids = []
+    for page in range(SEARCH_PAGE_COUNT):
+        payload = store_json(
+            "/search/results/",
+            {
+                "query": "", "start": page * SEARCH_PAGE_SIZE, "count": SEARCH_PAGE_SIZE,
+                "dynamic_data": "", "infinite": 1, "cc": "cn", **search_params,
+            },
+        )
+        page_ids = re.findall(r'data-ds-appid=\\?"(\d+)', payload.get("results_html", ""))
+        app_ids.extend(page_ids)
+        if len(page_ids) < SEARCH_PAGE_SIZE:
+            break
     return [{"id": int(app_id)} for app_id in dict.fromkeys(app_ids)]
 
 
@@ -184,6 +198,7 @@ def build_store_catalog():
     backup_sources = [
         ("highly_rated", "高评价精选", {"sort_by": "Reviews_DESC", "supportedlang": "schinese"}),
         ("specials", "中国区优惠", {"specials": 1}),
+        ("new_releases", "中国区新品", {"sort_by": "Released_DESC"}),
     ]
     for category_id, source, search_params in backup_sources:
         for item in get_store_search_items(search_params):
@@ -206,7 +221,7 @@ def build_store_catalog():
 
 def refresh_store_catalog():
     games = build_store_catalog()
-    if len(games) < 40:
+    if len(games) < MIN_CATALOG_SIZE:
         raise RuntimeError(f"只获取到 {len(games)} 个有效商店条目，保留现有缓存。")
     CATALOG_SNAPSHOT_PATH.parent.mkdir(parents=True, exist_ok=True)
     snapshot = {"generated_at": datetime.now(timezone.utc).isoformat(), "games": games}
@@ -226,7 +241,7 @@ def get_store_catalog():
     try:
         snapshot = json.loads(CATALOG_SNAPSHOT_PATH.read_text(encoding="utf-8"))
         games = snapshot.get("games", [])
-        if len(games) < 40:
+        if len(games) < MIN_CATALOG_SIZE:
             return CATALOG
         store_catalog_cache.update(modified_at=modified_at, games=games)
         return games
@@ -296,7 +311,6 @@ def recommend(games, excluded_ids=None, evidence_use_counts=None, priority="bala
         if priority == "top_sellers":
             raise ValueError("热销和高评价精选中都没有更多未展示的游戏。请重新开始查询或选择其他优先级。")
         raise ValueError("当前商店候选已全部看过。请稍后再试，或重新开始一次查询。")
-    # Explicit priorities stay within their selected storefront category across refreshes.
     # Hot sellers are a shallow live storefront list. Once it is exhausted, fall
     # back to the deeper high-rated pool without relabeling those games as hot.
     if priority == "top_sellers":
