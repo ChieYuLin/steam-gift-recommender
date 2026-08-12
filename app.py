@@ -328,11 +328,15 @@ def recommend(games, excluded_ids=None, evidence_use_counts=None, priority="bala
     else:
         established = [game for game in ranked if game.get("store_category") in {"top_sellers", "specials", "highly_rated"}]
         new_releases = [game for game in ranked if game.get("store_category") == "new_releases"]
-        if not established:
-            raise ValueError("综合匹配中的热销和优惠候选已看完。请重新开始查询，或切换到“新品优先”继续探索。")
-        # New releases are exploratory in balanced mode: no more than one per batch.
-        pool = established[:12] + new_releases[:6]
-    target_count = min(4, len(established) + min(1, len(new_releases))) if priority == "balanced" else min(4, len(pool))
+        using_new_release_fallback = not established
+        if using_new_release_fallback:
+            # Some large libraries already contain every mature candidate. Offer a
+            # small discovery batch instead of failing the first search outright.
+            pool = new_releases[:12]
+        else:
+            # New releases are exploratory in balanced mode: no more than one per batch.
+            pool = established[:12] + new_releases[:6]
+    target_count = min(2, len(pool)) if priority == "balanced" and using_new_release_fallback else (min(4, len(established) + min(1, len(new_releases))) if priority == "balanced" else min(4, len(pool)))
     weights = [
         max(1, game["score"] + 2) * (0.22 if priority == "balanced" and game.get("store_category") == "new_releases" else 1)
         for game in pool
@@ -357,7 +361,7 @@ def recommend(games, excluded_ids=None, evidence_use_counts=None, priority="bala
         index = pool.index(chosen)
         pool.pop(index)
         weights.pop(index)
-        if priority == "balanced" and new_release_count >= 1:
+        if priority == "balanced" and not using_new_release_fallback and new_release_count >= 1:
             pool_and_weights = [(game, weight) for game, weight in zip(pool, weights) if game.get("store_category") != "new_releases"]
             pool = [game for game, _ in pool_and_weights]
             weights = [weight for _, weight in pool_and_weights]
