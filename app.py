@@ -293,6 +293,8 @@ def recommend(games, excluded_ids=None, evidence_use_counts=None, priority="bala
         results.append({**game, "score": score, "reason": reason, "matched_genres": matched_genres, "evidence_app_ids": []})
     ranked = sorted(results, key=lambda game: -game["score"])
     if not ranked:
+        if priority == "top_sellers":
+            raise ValueError("热销和高评价精选中都没有更多未展示的游戏。请重新开始查询或选择其他优先级。")
         raise ValueError("当前商店候选已全部看过。请稍后再试，或重新开始一次查询。")
     # Explicit priorities stay within their selected storefront category across refreshes.
     # Hot sellers are a shallow live storefront list. Once it is exhausted, fall
