@@ -196,6 +196,7 @@ def build_store_catalog():
             if item.get("type") in (0, "app"):
                 candidates.setdefault(item["id"], (item, source, category_id, True))
     backup_sources = [
+        ("top_sellers", "中国区热销", {"filter": "topsellers"}),
         ("highly_rated", "高评价精选", {"sort_by": "Reviews_DESC", "supportedlang": "schinese"}),
         ("specials", "中国区优惠", {"specials": 1}),
         ("new_releases", "中国区新品", {"sort_by": "Released_DESC"}),
