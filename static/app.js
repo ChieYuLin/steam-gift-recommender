@@ -79,7 +79,7 @@ async function findGifts(refresh = false) {
       const item = document.createElement("article");
       item.className = "game";
       item.style.animationDelay = `${index * 70}ms`;
-      const metadata = game.store_category === "new_releases" ? `发售：${game.release_date} / 好评率：${game.positive_rate ?? "暂无"}%` : game.store_category === "top_sellers" ? `好评率：${game.positive_rate ?? "暂无"}% / ${game.review_count.toLocaleString()} 篇评测` : "";
+      const metadata = game.store_category === "new_releases" ? `发售：${game.release_date} / 好评率：${game.positive_rate ?? "暂无"}%` : ["top_sellers", "highly_rated"].includes(game.store_category) ? `好评率：${game.positive_rate ?? "暂无"}% / ${game.review_count.toLocaleString()} 篇评测`: "";
       item.innerHTML = `<img src="${game.image}" alt="${game.name}" /><div><p class="game-number">推荐 ${String(index + 1).padStart(2, "0")}${game.store_source ? ` / ${game.store_source}` : ""}</p><h3>${game.name}</h3>${metadata ? `<p class="metadata">${metadata}</p>` : ""}<p class="reason">${game.reason}</p><a href="https://store.steampowered.com/app/${game.app_id}/?cc=cn" target="_blank" rel="noreferrer">在 Steam 中国区查看 <span aria-hidden="true">↗</span></a></div>`;
       return item;
     }));
