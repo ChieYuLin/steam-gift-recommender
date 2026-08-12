@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gift Scout | Steam 礼物推荐</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  </head>
+  <body>
+    <main>
+      <nav><a class="wordmark" href="/">GIFT SCOUT</a><span>STEAM EDITION / 01</span></nav>
+      <section class="intro">
+        <p class="eyebrow">给对方的游戏库做一次侦察</p>
+        <h1>送一款他<br /><em>还没有</em>的好游戏。</h1>
+        <p class="lede">输入公开 Steam 个人资料。我们会根据已拥有的游戏找出尚未拥有、却更可能合口味的礼物。</p>
+      </section>
+      <section class="lookup" aria-label="Steam profile lookup">
+        <label for="profile">Steam 个人资料</label>
+        <input id="profile" placeholder="steamcommunity.com/id/example 或 17 位 SteamID" autocomplete="url" />
+        <fieldset class="priority"><legend>商店优先级</legend><div class="priority-options"><label><input type="radio" name="priority" value="balanced" checked />综合匹配</label><label><input type="radio" name="priority" value="new_releases" />新品优先</label><label><input type="radio" name="priority" value="specials" />优惠优先</label><label><input type="radio" name="priority" value="top_sellers" />热销优先</label></div></fieldset>
+        {% if not server_managed_api_key %}
+        <label class="api-key-label" for="api-key">Steam Web API 密钥 <a href="https://steamcommunity.com/dev/apikey" target="_blank" rel="noreferrer">前往 Steam 申请 ↗</a></label>
+        <div class="input-row"><input id="api-key" type="password" placeholder="在 steamcommunity.com/dev/apikey 申请" autocomplete="off" spellcheck="false" /><button id="search" type="button">寻找礼物 <span aria-hidden="true">→</span></button></div>
+        <p class="privacy">只支持公开个人资料。登录 Steam 后可在上方链接申请密钥；密钥仅用于本次查询，不会保存。</p>
+        {% else %}
+        <div class="input-row"><span class="server-key-note">服务已安全配置 Steam 数据访问。</span><button id="search" type="button">寻找礼物 <span aria-hidden="true">→</span></button></div>
+        <p class="privacy">只支持公开个人资料；不会保存输入的资料链接或游戏库。</p>
+        {% endif %}
+      </section>
+      <section id="status" class="status" aria-live="polite"></section>
+      <section id="results" class="results" hidden>
+        <div class="result-header"><div id="player"></div><div class="result-actions"><p id="library-size"></p><button id="refresh" type="button">换一批 <span aria-hidden="true">↻</span></button></div></div>
+        <div id="game-list" class="game-list"></div>
+      </section>
+    </main>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+  </body>
+</html>
