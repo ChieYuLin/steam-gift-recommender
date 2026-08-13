@@ -1,0 +1,26 @@
+# Steam Gift Recommender label gold standard
+#
+# Paste one label per line using exactly one of these forms:
+#
+# level_1 | General label
+# level_2 | Specific label
+# level_2 | Specific label | Optional related level_1 label
+#
+# Examples only. Delete them before pasting your final selections:
+# level_1 | Action
+# level_1 | Simulation
+# level_2 | Racing
+# level_2 | Cats | Casual
+#
+# Rules for your draft:
+# - level_1: broad umbrella labels, useful only as a fallback.
+# - level_2: specific labels that should drive matching whenever possible.
+# - Use the Steam label wording you selected, one time only per line.
+# - Keep the optional parent only if it is genuinely helpful; it is not required.
+# - Lines beginning with # are comments and will be ignored.
+
+# Paste level_1 labels below
+
+
+# Paste level_2 labels below
+
