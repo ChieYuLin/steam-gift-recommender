@@ -2,7 +2,7 @@
   "version": 1,
   "updated_at": "2026-08-13",
   "scoring": {
-    "level_3_weight": 10,
+    "level_3_weight": 8,
     "selected_tag_budget": 50,
     "well_known_review_count": 5000,
     "content_risk_penalty": -2,
@@ -27,6 +27,54 @@
       "minimum_playtime_minutes": 120
     }
   },
+  "tag_weights": {
+    "4604": 6,
+    "122": 2,
+    "1742": 3,
+    "1684": 3,
+    "3920": 9,
+    "91114": 9,
+    "10397": 6,
+    "9000001": 9,
+    "9000002": 9,
+    "4252": 4,
+    "4195": 4,
+    "97376": 6,
+    "17894": 6,
+    "4231": 8,
+    "31579": 13,
+    "42804": 8,
+    "4711": 6,
+    "97070": 10,
+    "1687": 8,
+    "1663": 8,
+    "3814": 8,
+    "620519": 8,
+    "1774": 6,
+    "1664": 8,
+    "5537": 8,
+    "6129": 6,
+    "3964": 3,
+    "4726": 3,
+    "4106": 3,
+    "1738": 3,
+    "5186": 3,
+    "4434": 8,
+    "7208": 6,
+    "1091588": 8,
+    "454187": 8,
+    "1670": 8,
+    "1645": 8,
+    "255534": 8,
+    "3799": 8,
+    "3978": 8,
+    "3835": 6,
+    "29482": 8,
+    "1628": 8,
+    "9000010": 8,
+    "9000011": 6,
+    "9000012": 8
+  },
   "level_1": {
     "19": "Action",
     "21": "Adventure",
@@ -35,7 +83,6 @@
     "122": "Role-Playing",
     "9": "Strategy",
     "701": "Sports",
-    "1774": "Shooter",
     "1662": "Survival",
     "1625": "Platformer",
     "3810": "Sandbox",
@@ -47,17 +94,12 @@
     "1677": "Turn-Based",
     "4161": "Real Time",
     "1716": "Roguelike",
-    "3959": "Roguelite",
-    "1663": "First-Person Shooter",
-    "3814": "Third-Person Shooter",
-    "620519": "Hero Shooter"
+    "3959": "Roguelite"
   },
   "level_2_core": {
     "1664": "Puzzle",
     "4508": "Co-op Campaign",
     "42804": "Action Roguelike",
-    "1091588": "Roguelike Deckbuilder",
-    "454187": "Traditional Roguelike",
     "32322": "Deckbuilding",
     "1666": "Card Game",
     "9271": "Trading Card Game",
@@ -68,32 +110,26 @@
     "5547": "Arena Shooter",
     "353880": "Looter Shooter",
     "176981": "Battle Royale",
+    "9000010": "Zombies",
     "4736": "2D Fighter",
     "6506": "3D Fighter",
     "1743": "Fighting",
     "4158": "Beat 'em up",
     "21725": "Tactical RPG",
     "4474": "Computer RPG",
-    "4434": "JRPG",
     "1754": "MMORPG",
     "17305": "Strategy RPG",
     "4231": "Action RPG",
-    "1676": "Real-Time Strategy",
     "1723": "Action RTS",
     "1741": "Turn-Based Strategy",
     "14139": "Turn-Based Tactics",
-    "3813": "Real-Time Tactics",
-    "4364": "Grand Strategy",
-    "1670": "4X",
-    "1645": "Tower Defense",
+    "9000011": "Military",
     "1084988": "Auto Battler",
     "220585": "Colony Sim",
     "4328": "City Builder",
-    "255534": "Automation",
     "87918": "Farming Sim",
     "4520": "Farming Management",
     "10235": "Life Sim",
-    "35079": "Job Simulator",
     "1100687": "Automobile Sim",
     "16598": "Space Sim",
     "1100688": "Medical Sim",
@@ -110,12 +146,10 @@
     "3841": "本地合作",
     "3843": "在线合作",
     "3859": "多人",
-    "3799": "Visual Novel",
     "11014": "Interactive Fiction",
     "31275": "Text-Based",
     "24003": "Word Game",
     "9551": "Dating Sim",
-    "3978": "Survival Horror",
     "1721": "Psychological Horror",
     "4064": "Thriller",
     "10808": "Supernatural",
@@ -141,7 +175,16 @@
     "1621": "音乐",
     "615955": "挂机游戏",
     "560542": "增量",
-    "916648": "生物收集"
+    "916648": "生物收集",
+    "97070": "Assassin",
+    "1687": "Stealth",
+    "1663": "第一人称射击",
+    "3814": "第三人称射击",
+    "620519": "英雄射击",
+    "1774": "射击",
+    "1698": "Puzzle",
+    "5537": "Puzzle Platformer",
+    "6129": "Logic"
   },
   "level_3": {
     "31579": "少女游戏",
@@ -159,13 +202,27 @@
     "6915": "武术",
     "4255": "清版射击",
     "29482": "Souls-like",
-    "1628": "Metroidvania"
+    "1628": "Metroidvania",
+    "4434": "JRPG",
+    "1091588": "Roguelike Deckbuilder",
+    "454187": "Traditional Roguelike",
+    "1670": "4X",
+    "1645": "Tower Defense",
+    "255534": "Automation",
+    "3799": "Visual Novel",
+    "3978": "Survival Horror",
+    "35079": "Job Simulator",
+    "9000012": "Strategic Command",
+    "9000001": "Zelda-like",
+    "9000002": "Pokemon-like"
   },
   "soft_preference": {
     "4166": "Atmospheric",
+      "4106": "Action-Adventure",
+      "1738": "Hidden Object",
+      "5186": "Psychological",
     "4305": "Colorful",
     "4726": "Cute",
-    "3964": "Pixel Graphics",
     "4252": "Stylized",
     "4085": "Anime",
     "4004": "Retro",
@@ -226,7 +283,11 @@
     "18594": "FMV",
     "7702": "Narrative",
     "4145": "Cinematic",
-    "6971": "Multiple Endings"
+    "6971": "Multiple Endings",
+    "3964": "Pixel Graphics",
+    "1742": "Story Rich",
+    "97376": "Wholesome",
+    "4711": "Replay Value"
   },
   "content_risk_tags": {
     "12095": "Sexual Content",
@@ -262,6 +323,65 @@
       "when_all": [
         "3799",
         "4947"
+      ],
+      "within_rank": 10
+    },
+    {
+      "name": "动漫色情",
+      "when_all": [
+        "9130"
+      ],
+      "within_rank": 10
+    },
+    {
+      "name": "色情内容",
+      "when_all": [
+        "12095"
+      ],
+      "within_rank": 3
+    },
+    {
+      "name": "色情内容+全动态影像",
+      "when_all": [
+        "12095",
+        "18594"
+      ]
+    },
+    {
+      "name": "色情内容+互动小说",
+      "when_all": [
+        "11014",
+        "12095"
+      ]
+    },
+    {
+      "name": "色情内容+视觉小说",
+      "when_all": [
+        "12095",
+        "3799"
+      ],
+      "within_rank": 10
+    },
+    {
+      "name": "色情内容+视觉文字游戏",
+      "when_all": [
+        "12095",
+        "3799",
+        "24003"
+      ]
+    },
+    {
+      "name": "裸露+少女游戏",
+      "when_all": [
+        "31579",
+        "6650"
+      ]
+    },
+    {
+      "name": "裸露+视觉小说",
+      "when_all": [
+        "3799",
+        "6650"
       ],
       "within_rank": 10
     }
@@ -306,7 +426,7 @@
   ],
   "level_3_pairs": [
     {
-      "name": "音游",
+      "name": "节奏音游",
       "tags": [
         "1621",
         "1752"
@@ -325,6 +445,54 @@
         "916648",
         "615955"
       ]
+    },
+    {
+      "name": "农场生活",
+      "tags": [
+        "87918",
+        "10235",
+        "9100086"
+      ],
+      "min": 2
+    },
+    {
+      "name": "战术回合",
+      "tags": [
+        "21725",
+        "14139"
+      ]
+    },
+    {
+      "name": "城市殖民",
+      "tags": [
+        "4328",
+        "220585"
+      ]
+    },
+      {
+        "name": "互动叙事",
+        "tags": [
+          "24003",
+          "11014"
+        ]
+      },
+      {
+        "name": "纯文字玩法",
+        "tags": [
+          "24003",
+          "31275"
+        ]
+      },
+    {
+      "name": "卡牌构筑",
+      "tags": [
+        "1666",
+        "32322",
+        "791774",
+        "1091588",
+        "9271"
+      ],
+      "min": 3
     }
   ],
   "tag_match_families": [
@@ -367,6 +535,30 @@
         "1770",
         "17389"
       ]
+    },
+    {
+      "name": "soulslike_metroidvania",
+      "tags": [
+        "29482",
+        "1628"
+      ]
+    },
+    {
+      "name": "farming",
+      "tags": [
+        "87918",
+        "10235",
+        "9100086"
+      ]
+    },
+    {
+      "name": "shooter",
+      "tags": [
+        "1774",
+        "1663",
+        "3814",
+        "620519"
+      ]
     }
   ],
   "preference_ui_groups": {
@@ -383,8 +575,8 @@
       "11014",
       "7208"
     ],
-    "爱玩的": [],
-    "最近玩": []
+    "最近玩": [],
+    "喜欢玩": []
   },
   "exclude_from_matching": {
     "4182": "Singleplayer",
@@ -412,5 +604,9 @@
     "1445": "Software Training",
     "1320952": "Desktop Companion",
     "5407": "Benchmark"
+  },
+  "semi_passive_playtime_tags": {
+    "87918": "Farming Sim",
+    "4520": "Farming/Crafting"
   }
 }

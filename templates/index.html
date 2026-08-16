@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gift Scout | Steam 礼物推荐</title>
+    <title>Gifi | Steam 礼物推荐</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono&family=Noto+Serif+SC:wght@500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -11,7 +11,7 @@
   </head>
   <body>
     <main>
-      <nav><a class="wordmark" href="/">GIFT SCOUT</a><div class="nav-actions"><span>STEAM EDITION / 01</span><div class="background-picker" aria-label="切换背景颜色"><button class="background-swatch paper-swatch" type="button" data-background="paper" title="纸张色背景" aria-label="纸张色背景"></button><button class="background-swatch mint-swatch" type="button" data-background="mint" title="薄荷色背景" aria-label="薄荷色背景"></button><button class="background-swatch sky-swatch" type="button" data-background="sky" title="雾蓝色背景" aria-label="雾蓝色背景"></button></div><button id="back" class="back-button" type="button" title="返回上一页" aria-label="返回上一页">←</button></div></nav>
+      <nav><a class="wordmark" href="/">GIFI</a><div class="nav-actions"><span>STEAM EDITION / 01</span><div class="background-picker" aria-label="切换背景颜色"><button class="background-swatch paper-swatch" type="button" data-background="paper" title="纸张色背景" aria-label="纸张色背景"></button><button class="background-swatch mint-swatch" type="button" data-background="mint" title="薄荷色背景" aria-label="薄荷色背景"></button><button class="background-swatch sky-swatch" type="button" data-background="sky" title="雾蓝色背景" aria-label="雾蓝色背景"></button></div><button id="back" class="back-button" type="button" title="返回上一页" aria-label="返回上一页">←</button></div></nav>
       <section class="intro">
         <p class="eyebrow" id="intro-eyebrow">从 TA 的游戏库里，挑一份刚好合口味的礼物</p>
         <h1 id="intro-title">给 TA 挑一款<br />游戏礼物 🎁</h1>
@@ -20,6 +20,7 @@
       <section class="lookup" aria-label="Steam profile lookup">
         <div class="mode-tabs" role="tablist" aria-label="推荐模式">
           <button id="mode-gift" class="mode-tab is-active" type="button" role="tab" aria-selected="true">送礼模式</button>
+          <button id="mode-gacha" class="mode-tab" type="button" role="tab" aria-selected="false">抽卡模式</button>
           <button id="mode-seed" class="mode-tab" type="button" role="tab" aria-selected="false">种草模式</button>
         </div>
         <p id="mode-note" class="mode-note">从 Steam 商店目录里，挑 TA 还没有的游戏作为礼物。</p>
@@ -40,7 +41,7 @@
           <p class="seed-requirements">种草模式需要<strong>双方都公开游戏库</strong>：你和 TA 都要在 Steam 的「隐私设置 → 游戏详情」里选择公开，否则读不到游戏库。因为要同时分析两个账号，首次查询会比送礼模式慢，请耐心等待。</p>
         </div>
         <fieldset class="price-range"><legend>预算（中国区人民币）</legend><div class="price-inputs"><label>最低 <input id="min-price" type="number" min="0" value="0" /></label><span>至</span><label>最高 <input id="max-price" type="number" min="0" value="9999" /></label></div></fieldset>
-        <fieldset class="priority"><legend>商店优先级</legend><div class="priority-options"><label><input type="radio" name="priority" value="balanced" checked />综合匹配</label><label><input type="radio" name="priority" value="new_releases" />新品优先</label><label><input type="radio" name="priority" value="specials" />优惠优先</label><label><input type="radio" name="priority" value="top_sellers" />热销优先</label></div></fieldset>
+        <fieldset class="priority"><legend>商店优先级</legend><div class="priority-options"><label><input type="radio" name="priority" value="balanced" checked />综合匹配</label><label><input type="radio" name="priority" value="match" />匹配优先</label><label><input type="radio" name="priority" value="new_releases" />新品优先</label><label><input type="radio" name="priority" value="specials" />优惠优先</label><label><input type="radio" name="priority" value="top_sellers" />热销优先</label><label><input type="radio" name="priority" value="hidden_gems" />小众优先</label></div></fieldset>
         {% if not server_managed_api_key %}
         <label class="api-key-label" for="api-key">Steam Web API 密钥 <a href="https://steamcommunity.com/dev/apikey" target="_blank" rel="noreferrer">前往 Steam 申请 ↗</a></label>
         <div class="input-row"><input id="api-key" type="password" placeholder="在 steamcommunity.com/dev/apikey 申请" autocomplete="off" spellcheck="false" /><button id="search" type="button">寻找礼物 <span aria-hidden="true">→</span></button></div>
@@ -54,8 +55,23 @@
       <section id="status" class="status" aria-live="polite"></section>
       <section id="results" class="results" hidden>
         <div class="result-header"><div id="player"></div><div class="result-actions"><p id="library-size"></p><button id="previous-batch" type="button" hidden>上一批 <span aria-hidden="true">←</span></button><button id="refresh" type="button">换一批 <span aria-hidden="true">↻</span></button></div></div>
-        <div class="result-panels">
+          <section class="score-guide" id="score-guide">
+            <ul class="score-guide-list" id="score-guide-list">
+              <li><b>90 分以上</b><span>捡到宝了</span></li>
+              <li><b>70 - 90</b><span>相当合适的好礼物</span></li>
+              <li><b>50 - 70</b><span>问题不大的普通礼物</span></li>
+                <li><b>30 - 50</b><span>用寄语补足这份心意</span></li>
+              <li><b>30 以下</b><span>对方可能会不太感兴趣</span></li>
+            </ul>
+            <p class="score-guide-note" id="seed-score-note" hidden>种草模式和送礼模式的「综合匹配」用的是同一套算分尺度，所以整体分数不会更高。如果看到的分数偏低，属于正常情况。</p>
+          </section>
         <details id="preference-confirmation" class="preference-confirmation" hidden><summary><span id="preference-title">TA 喜欢玩的游戏标签</span><span id="preference-limit">最多确认 3 个　可选　⌄</span></summary><div id="preference-tags" class="preference-tags"></div><button id="apply-preferences" type="button" disabled>应用偏好</button></details>
+        <div id="game-list" class="game-list"></div>
+          <nav class="batch-pagination" id="batch-pagination" aria-label="推荐分页" hidden>
+            <button id="bottom-previous-batch" type="button" hidden>上一批 <span aria-hidden="true">←</span></button>
+            <div class="batch-pages" id="batch-pages"></div>
+            <button id="bottom-refresh" type="button">换一批 <span aria-hidden="true">↻</span></button>
+          </nav>
         <details id="score-lookup" class="score-lookup">
           <summary><span>查一款游戏合不合 TA 口味</span><span class="score-lookup-hint">输入游戏名　⌄</span></summary>
           <div class="score-lookup-body">
@@ -70,8 +86,6 @@
             <div id="score-result" class="score-result" hidden></div>
           </div>
         </details>
-        </div>
-        <div id="game-list" class="game-list"></div>
       </section>
       <section id="wishlist" class="wishlist" hidden><div class="result-header"><h2>待购买清单</h2><div class="wishlist-summary"><p id="wishlist-count"></p><strong id="wishlist-total"></strong></div></div><div id="wishlist-list" class="wishlist-list"></div><section class="gift-message" aria-labelledby="gift-message-title"><p id="gift-message-title">送礼小卡片</p><blockquote id="gift-message-text"></blockquote><div class="gift-message-actions"><button id="shuffle-gift-message" type="button">换一句 <span aria-hidden="true">↻</span></button><button id="copy-gift-message" type="button">复制</button></div></section></section>
       <details class="feedback" id="feedback">

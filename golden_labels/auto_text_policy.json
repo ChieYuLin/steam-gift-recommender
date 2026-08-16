@@ -1,0 +1,1671 @@
+{
+  "version": 1,
+  "tags": [
+    {
+      "key": 9100000,
+      "tag": "Singleplayer",
+      "chinese": "单人",
+      "game_count": 2734,
+      "weight": 3,
+      "group": "soft_preference"
+    },
+    {
+      "key": 9100001,
+      "tag": "Indie",
+      "chinese": "独立",
+      "game_count": 1618,
+      "weight": 3,
+      "group": "soft_preference"
+    },
+    {
+      "key": 9100002,
+      "tag": "2D",
+      "chinese": "2D",
+      "game_count": 1268,
+      "weight": 3,
+      "group": "soft_preference"
+    },
+    {
+      "key": 9100003,
+      "tag": "3D",
+      "chinese": "3D",
+      "game_count": 839,
+      "weight": 4,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100004,
+      "tag": "Funny",
+      "chinese": "欢乐",
+      "game_count": 677,
+      "weight": 4,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100005,
+      "tag": "First-Person",
+      "chinese": "第一人称",
+      "game_count": 666,
+      "weight": 4,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100006,
+      "tag": "Relaxing",
+      "chinese": "放松",
+      "game_count": 646,
+      "weight": 4,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100007,
+      "tag": "Family Friendly",
+      "chinese": "阖家",
+      "game_count": 470,
+      "weight": 5,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100008,
+      "tag": "Horror",
+      "chinese": "恐怖",
+      "game_count": 455,
+      "weight": 5,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100009,
+      "tag": "Third Person",
+      "chinese": "第三人称",
+      "game_count": 433,
+      "weight": 5,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100010,
+      "tag": "Great Soundtrack",
+      "chinese": "好评原声音轨",
+      "game_count": 408,
+      "weight": 5,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100011,
+      "tag": "Realistic",
+      "chinese": "拟真",
+      "game_count": 395,
+      "weight": 5,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100012,
+      "tag": "Controller",
+      "chinese": "控制器",
+      "game_count": 375,
+      "weight": 5,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100013,
+      "tag": "Difficult",
+      "chinese": "低容错",
+      "game_count": 342,
+      "weight": 5,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100014,
+      "tag": "Mystery",
+      "chinese": "悬疑",
+      "game_count": 342,
+      "weight": 5,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100015,
+      "tag": "Arcade",
+      "chinese": "街机",
+      "game_count": 329,
+      "weight": 5,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100016,
+      "tag": "Early Access",
+      "chinese": "抢先体验",
+      "game_count": 329,
+      "weight": 5,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100017,
+      "tag": "Combat",
+      "chinese": "战斗",
+      "game_count": 323,
+      "weight": 5,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100018,
+      "tag": "Character Customization",
+      "chinese": "角色自定义",
+      "game_count": 313,
+      "weight": 5,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100019,
+      "tag": "Immersive Sim",
+      "chinese": "沉浸式模拟",
+      "game_count": 312,
+      "weight": 5,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100020,
+      "tag": "Physics",
+      "chinese": "物理",
+      "game_count": 312,
+      "weight": 5,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100021,
+      "tag": "Point & Click",
+      "chinese": "指向点击",
+      "game_count": 296,
+      "weight": 5,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100022,
+      "tag": "Top-Down",
+      "chinese": "俯视",
+      "game_count": 277,
+      "weight": 5,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100023,
+      "tag": "Resource Management",
+      "chinese": "资源管理",
+      "game_count": 266,
+      "weight": 5,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100024,
+      "tag": "PvE",
+      "chinese": "玩家对战环境",
+      "game_count": 244,
+      "weight": 6,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100025,
+      "tag": "Tactical",
+      "chinese": "战术",
+      "game_count": 244,
+      "weight": 6,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100026,
+      "tag": "Minimalist",
+      "chinese": "极简主义",
+      "game_count": 229,
+      "weight": 6,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100027,
+      "tag": "Cozy",
+      "chinese": "温馨惬意",
+      "game_count": 218,
+      "weight": 6,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100028,
+      "tag": "Economy",
+      "chinese": "经济",
+      "game_count": 218,
+      "weight": 6,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100029,
+      "tag": "Choose Your Own Adventure",
+      "chinese": "自选历险体验",
+      "game_count": 203,
+      "weight": 6,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100030,
+      "tag": "Linear",
+      "chinese": "线性",
+      "game_count": 199,
+      "weight": 6,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100031,
+      "tag": "Hack and Slash",
+      "chinese": "砍杀",
+      "game_count": 191,
+      "weight": 6,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100032,
+      "tag": "Procedural Generation",
+      "chinese": "程序生成",
+      "game_count": 191,
+      "weight": 6,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100033,
+      "tag": "Magic",
+      "chinese": "魔法",
+      "game_count": 179,
+      "weight": 6,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100034,
+      "tag": "Isometric",
+      "chinese": "等角视角",
+      "game_count": 177,
+      "weight": 6,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100035,
+      "tag": "War",
+      "chinese": "战争",
+      "game_count": 160,
+      "weight": 6,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100036,
+      "tag": "Cartoon",
+      "chinese": "卡通",
+      "game_count": 158,
+      "weight": 6,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100037,
+      "tag": "Dungeon Crawler",
+      "chinese": "迷宫探索",
+      "game_count": 155,
+      "weight": 6,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100038,
+      "tag": "Side Scroller",
+      "chinese": "横向滚屏",
+      "game_count": 149,
+      "weight": 6,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100039,
+      "tag": "Lore-Rich",
+      "chinese": "故事架构丰富",
+      "game_count": 140,
+      "weight": 6,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100040,
+      "tag": "Collectathon",
+      "chinese": "收集马拉松",
+      "game_count": 138,
+      "weight": 6,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100041,
+      "tag": "Detective",
+      "chinese": "推理",
+      "game_count": 134,
+      "weight": 6,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100042,
+      "tag": "Old School",
+      "chinese": "老式",
+      "game_count": 130,
+      "weight": 6,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100043,
+      "tag": "Futuristic",
+      "chinese": "未来",
+      "game_count": 127,
+      "weight": 6,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100044,
+      "tag": "Walking Simulator",
+      "chinese": "步行模拟",
+      "game_count": 127,
+      "weight": 6,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100045,
+      "tag": "1990's",
+      "chinese": "90 年代",
+      "game_count": 126,
+      "weight": 6,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100046,
+      "tag": "Moddable",
+      "chinese": "可模组化",
+      "game_count": 123,
+      "weight": 6,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100047,
+      "tag": "Investigation",
+      "chinese": "调查",
+      "game_count": 120,
+      "weight": 6,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100048,
+      "tag": "2.5D",
+      "chinese": "2.5D",
+      "game_count": 114,
+      "weight": 6,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100049,
+      "tag": "Short",
+      "chinese": "短篇",
+      "game_count": 111,
+      "weight": 6,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100050,
+      "tag": "Time Management",
+      "chinese": "时间管理",
+      "game_count": 108,
+      "weight": 6,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100051,
+      "tag": "Dialogue Heavy",
+      "chinese": "对话丰富",
+      "game_count": 103,
+      "weight": 6,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100052,
+      "tag": "Education",
+      "chinese": "教育",
+      "game_count": 99,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100053,
+      "tag": "RTS",
+      "chinese": "即时战略",
+      "game_count": 99,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100054,
+      "tag": "Score Attack",
+      "chinese": "竞分",
+      "game_count": 98,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100055,
+      "tag": "Crime",
+      "chinese": "犯罪",
+      "game_count": 97,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100056,
+      "tag": "Fast-Paced",
+      "chinese": "快节奏",
+      "game_count": 95,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100057,
+      "tag": "Shoot 'Em Up",
+      "chinese": "清版射击",
+      "game_count": 93,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100058,
+      "tag": "Modern",
+      "chinese": "现代",
+      "game_count": 92,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100059,
+      "tag": "VR",
+      "chinese": "虚拟现实",
+      "game_count": 87,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100060,
+      "tag": "Loot",
+      "chinese": "刷宝",
+      "game_count": 86,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100061,
+      "tag": "Abstract",
+      "chinese": "抽象",
+      "game_count": 85,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100062,
+      "tag": "Nonlinear",
+      "chinese": "非线性",
+      "game_count": 80,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100063,
+      "tag": "Wargame",
+      "chinese": "战争游戏",
+      "game_count": 79,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100064,
+      "tag": "Artificial Intelligence",
+      "chinese": "人工智能",
+      "game_count": 78,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100065,
+      "tag": "Level Editor",
+      "chinese": "关卡编辑",
+      "game_count": 77,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100066,
+      "tag": "Capitalism",
+      "chinese": "资本主义",
+      "game_count": 76,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100067,
+      "tag": "Classic",
+      "chinese": "经典",
+      "game_count": 73,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100068,
+      "tag": "1980s",
+      "chinese": "80 年代",
+      "game_count": 71,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100069,
+      "tag": "4 Player Local",
+      "chinese": "4 人本地",
+      "game_count": 66,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100070,
+      "tag": "Destruction",
+      "chinese": "破坏",
+      "game_count": 66,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100071,
+      "tag": "Perma Death",
+      "chinese": "永久死亡",
+      "game_count": 65,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100072,
+      "tag": "Team-Based",
+      "chinese": "团队导向",
+      "game_count": 64,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100074,
+      "tag": "Parkour",
+      "chinese": "跑酷",
+      "game_count": 61,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100075,
+      "tag": "Split Screen",
+      "chinese": "分屏",
+      "game_count": 60,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100076,
+      "tag": "Soundtrack",
+      "chinese": "原声音轨",
+      "game_count": 59,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100077,
+      "tag": "Tutorial",
+      "chinese": "教程",
+      "game_count": 56,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100079,
+      "tag": "Competitive",
+      "chinese": "竞技",
+      "game_count": 51,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100080,
+      "tag": "Experimental",
+      "chinese": "试验性",
+      "game_count": 51,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100081,
+      "tag": "Spectacle fighter",
+      "chinese": "华丽格斗",
+      "game_count": 47,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100082,
+      "tag": "Swordplay",
+      "chinese": "剑术",
+      "game_count": 47,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100083,
+      "tag": "Trading",
+      "chinese": "贸易",
+      "game_count": 47,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100084,
+      "tag": "Grid-Based Movement",
+      "chinese": "网格导向动作",
+      "game_count": 46,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100085,
+      "tag": "Mining",
+      "chinese": "采矿",
+      "game_count": 45,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100086,
+      "tag": "Agriculture",
+      "chinese": "农业",
+      "game_count": 41,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100087,
+      "tag": "Vehicular Combat",
+      "chinese": "车辆作战",
+      "game_count": 41,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100088,
+      "tag": "eSports",
+      "chinese": "电竞",
+      "game_count": 41,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100089,
+      "tag": "Noir",
+      "chinese": "黑色",
+      "game_count": 39,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100090,
+      "tag": "Gun Customization",
+      "chinese": "枪械改装",
+      "game_count": 38,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100091,
+      "tag": "Remake",
+      "chinese": "重制",
+      "game_count": 38,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100092,
+      "tag": "Mystery Dungeon",
+      "chinese": "不可思议迷宫",
+      "game_count": 36,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100093,
+      "tag": "Class-Based",
+      "chinese": "职业导向",
+      "game_count": 34,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100095,
+      "tag": "Transportation",
+      "chinese": "交通运输",
+      "game_count": 34,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100096,
+      "tag": "Political Sim",
+      "chinese": "政治模拟",
+      "game_count": 33,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100097,
+      "tag": "Conspiracy",
+      "chinese": "阴谋",
+      "game_count": 32,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100098,
+      "tag": "Heist",
+      "chinese": "劫掠",
+      "game_count": 31,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100099,
+      "tag": "Quick-Time Events",
+      "chinese": "快速反应事件",
+      "game_count": 31,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100100,
+      "tag": "Hex Grid",
+      "chinese": "六角格棋盘",
+      "game_count": 30,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100101,
+      "tag": "Organizing",
+      "chinese": "整理",
+      "game_count": 30,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100102,
+      "tag": "Runner",
+      "chinese": "奔跑",
+      "game_count": 30,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100104,
+      "tag": "Mouse Only",
+      "chinese": "仅鼠标",
+      "game_count": 29,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100105,
+      "tag": "Decorating",
+      "chinese": "装饰",
+      "game_count": 28,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100106,
+      "tag": "Ninja",
+      "chinese": "忍者",
+      "game_count": 28,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100107,
+      "tag": "Minigames",
+      "chinese": "小游戏",
+      "game_count": 27,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100108,
+      "tag": "Immersive",
+      "chinese": "沉浸式",
+      "game_count": 26,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100109,
+      "tag": "Hacking",
+      "chinese": "黑客",
+      "game_count": 25,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100110,
+      "tag": "Tanks",
+      "chinese": "坦克",
+      "game_count": 25,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100111,
+      "tag": "Voxel",
+      "chinese": "体素",
+      "game_count": 25,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100112,
+      "tag": "Diplomacy",
+      "chinese": "外交",
+      "game_count": 24,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100113,
+      "tag": "Cleaning",
+      "chinese": "清洁",
+      "game_count": 23,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100114,
+      "tag": "Touch-Friendly",
+      "chinese": "触控",
+      "game_count": 23,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100115,
+      "tag": "Typing",
+      "chinese": "打字",
+      "game_count": 22,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100116,
+      "tag": "Faith",
+      "chinese": "信仰",
+      "game_count": 21,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100117,
+      "tag": "God Game",
+      "chinese": "上帝模拟",
+      "game_count": 21,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100118,
+      "tag": "Sequel",
+      "chinese": "续作",
+      "game_count": 21,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100119,
+      "tag": "Solitaire",
+      "chinese": "纸牌",
+      "game_count": 21,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100120,
+      "tag": "Underground",
+      "chinese": "地下",
+      "game_count": 21,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100121,
+      "tag": "Bullet Time",
+      "chinese": "子弹时间",
+      "game_count": 19,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100122,
+      "tag": "Character Action Game",
+      "chinese": "角色动作",
+      "game_count": 19,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100123,
+      "tag": "Combat Racing",
+      "chinese": "战斗竞速",
+      "game_count": 19,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100125,
+      "tag": "Dynamic Narration",
+      "chinese": "动态旁白",
+      "game_count": 18,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100127,
+      "tag": "Addictive",
+      "chinese": "欲罢不能",
+      "game_count": 17,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100128,
+      "tag": "Dwarves",
+      "chinese": "矮人",
+      "game_count": 17,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100129,
+      "tag": "Epic",
+      "chinese": "史诗级",
+      "game_count": 17,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100130,
+      "tag": "Villain Protagonist",
+      "chinese": "恶人主角",
+      "game_count": 17,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100131,
+      "tag": "Horses",
+      "chinese": "马匹",
+      "game_count": 16,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100132,
+      "tag": "Nostalgia",
+      "chinese": "怀旧",
+      "game_count": 16,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100134,
+      "tag": "Free to Play",
+      "chinese": "免费开玩",
+      "game_count": 15,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100136,
+      "tag": "6DOF",
+      "chinese": "六自由度",
+      "game_count": 14,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100137,
+      "tag": "Pinball",
+      "chinese": "弹球",
+      "game_count": 14,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100138,
+      "tag": "Samurai",
+      "chinese": "武士",
+      "game_count": 14,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100139,
+      "tag": "Snow",
+      "chinese": "雪",
+      "game_count": 14,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100140,
+      "tag": "Time Attack",
+      "chinese": "时间竞速",
+      "game_count": 12,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100142,
+      "tag": "Cult",
+      "chinese": "邪教",
+      "game_count": 10,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100143,
+      "tag": "Espionage",
+      "chinese": "谍战",
+      "game_count": 10,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100144,
+      "tag": "Music-Based Procedural Generation",
+      "chinese": "基于音乐的程序生成",
+      "game_count": 10,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100145,
+      "tag": "Mod",
+      "chinese": "模组",
+      "game_count": 9,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100146,
+      "tag": "Silent Protagonist",
+      "chinese": "无声主角",
+      "game_count": 9,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100147,
+      "tag": "Skateboarding",
+      "chinese": "滑板",
+      "game_count": 9,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100148,
+      "tag": "Sniper",
+      "chinese": "狙击手",
+      "game_count": 9,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100149,
+      "tag": "Bikes",
+      "chinese": "自行车",
+      "game_count": 8,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100150,
+      "tag": "Dice",
+      "chinese": "骰子",
+      "game_count": 8,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100151,
+      "tag": "MOBA",
+      "chinese": "多人在线战术竞技",
+      "game_count": 8,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100152,
+      "tag": "Offroad",
+      "chinese": "越野",
+      "game_count": 8,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100153,
+      "tag": "Transhumanism",
+      "chinese": "超人类主义",
+      "game_count": 8,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100155,
+      "tag": "Foxes",
+      "chinese": "狐狸",
+      "game_count": 7,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100156,
+      "tag": "Motorbike",
+      "chinese": "摩托车",
+      "game_count": 7,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100157,
+      "tag": "Musou",
+      "chinese": "无双",
+      "game_count": 7,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100158,
+      "tag": "Birds",
+      "chinese": "鸟",
+      "game_count": 6,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100159,
+      "tag": "Electronic Music",
+      "chinese": "电子音乐",
+      "game_count": 6,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100160,
+      "tag": "Golf",
+      "chinese": "高尔夫",
+      "game_count": 6,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100162,
+      "tag": "TrackIR",
+      "chinese": "TrackIR",
+      "game_count": 6,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100163,
+      "tag": "Archery",
+      "chinese": "射箭",
+      "game_count": 5,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100164,
+      "tag": "Capybaras",
+      "chinese": "水豚",
+      "game_count": 5,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100165,
+      "tag": "Cycling",
+      "chinese": "骑车",
+      "game_count": 5,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100166,
+      "tag": "Elves",
+      "chinese": "精灵",
+      "game_count": 5,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100167,
+      "tag": "Gaming",
+      "chinese": "游戏相关",
+      "game_count": 5,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100168,
+      "tag": "Mini Golf",
+      "chinese": "迷你高尔夫",
+      "game_count": 5,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100169,
+      "tag": "On-Rails Shooter",
+      "chinese": "轨道射击",
+      "game_count": 5,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100170,
+      "tag": "Skating",
+      "chinese": "滑行",
+      "game_count": 5,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100171,
+      "tag": "Snowboarding",
+      "chinese": "单板滑雪",
+      "game_count": 5,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100172,
+      "tag": "Tennis",
+      "chinese": "网球",
+      "game_count": 5,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100173,
+      "tag": "Trivia",
+      "chinese": "益智问答",
+      "game_count": 5,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100174,
+      "tag": "Wrestling",
+      "chinese": "摔角",
+      "game_count": 5,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100175,
+      "tag": "BMX",
+      "chinese": "自行车越野",
+      "game_count": 4,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100176,
+      "tag": "Billiards",
+      "chinese": "台球",
+      "game_count": 4,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100177,
+      "tag": "Bowling",
+      "chinese": "保龄球",
+      "game_count": 4,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100178,
+      "tag": "Boxing",
+      "chinese": "拳击",
+      "game_count": 4,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100179,
+      "tag": "Football (American)",
+      "chinese": "美式橄榄球",
+      "game_count": 4,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100180,
+      "tag": "Hobby Sim",
+      "chinese": "爱好模拟",
+      "game_count": 4,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100181,
+      "tag": "Language Learning",
+      "chinese": "语言学习",
+      "game_count": 4,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100182,
+      "tag": "Mars",
+      "chinese": "火星",
+      "game_count": 4,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100183,
+      "tag": "Skiing",
+      "chinese": "滑雪",
+      "game_count": 4,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100184,
+      "tag": "Spelling",
+      "chinese": "拼字",
+      "game_count": 4,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100185,
+      "tag": "Asymmetric VR",
+      "chinese": "非对称 VR",
+      "game_count": 3,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100186,
+      "tag": "Falling Blocks",
+      "chinese": "下落方块",
+      "game_count": 3,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100187,
+      "tag": "Motocross",
+      "chinese": "摩托车越野",
+      "game_count": 3,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100188,
+      "tag": "Reboot",
+      "chinese": "重启",
+      "game_count": 3,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100189,
+      "tag": "Rock Music",
+      "chinese": "摇滚乐",
+      "game_count": 3,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100190,
+      "tag": "Spaceships",
+      "chinese": "太空飞船",
+      "game_count": 3,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100191,
+      "tag": "Voice Control",
+      "chinese": "声控",
+      "game_count": 3,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100192,
+      "tag": "Wolves",
+      "chinese": "狼",
+      "game_count": 3,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100193,
+      "tag": "Zoo",
+      "chinese": "动物园",
+      "game_count": 3,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100194,
+      "tag": "ATV",
+      "chinese": "ATV",
+      "game_count": 2,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100195,
+      "tag": "Baseball",
+      "chinese": "棒球",
+      "game_count": 2,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100196,
+      "tag": "Boss Rush",
+      "chinese": "Boss Rush",
+      "game_count": 2,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100197,
+      "tag": "Instrumental Music",
+      "chinese": "器乐",
+      "game_count": 2,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100198,
+      "tag": "Intentionally Awkward Controls",
+      "chinese": "蓄意操控困难",
+      "game_count": 2,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100199,
+      "tag": "Jump Scare",
+      "chinese": "突发惊吓",
+      "game_count": 2,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100200,
+      "tag": "Werewolves",
+      "chinese": "狼人",
+      "game_count": 2,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100201,
+      "tag": "360 Video",
+      "chinese": "360 全景视频",
+      "game_count": 1,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100202,
+      "tag": "8-bit Music",
+      "chinese": "8-bit 音乐",
+      "game_count": 1,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100205,
+      "tag": "Lemmings",
+      "chinese": "旅鼠",
+      "game_count": 1,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100206,
+      "tag": "Snooker",
+      "chinese": "斯诺克",
+      "game_count": 1,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100207,
+      "tag": "Volleyball",
+      "chinese": "排球",
+      "game_count": 1,
+      "weight": 10,
+      "group": "level_3"
+    }
+  ],
+  "excluded": [
+    {
+      "key": 9100073,
+      "tag": "Design & Illustration",
+      "chinese": "设计与插画",
+      "game_count": 62,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100078,
+      "tag": "Utilities",
+      "chinese": "实用工具",
+      "game_count": 53,
+      "weight": 7,
+      "group": "level_2_core"
+    },
+    {
+      "key": 9100094,
+      "tag": "Software",
+      "chinese": "软件",
+      "game_count": 34,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100103,
+      "tag": "Desktop Companion",
+      "chinese": "桌面伴侣",
+      "game_count": 29,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100124,
+      "tag": "Programming",
+      "chinese": "编程",
+      "game_count": 19,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100126,
+      "tag": "Game Development",
+      "chinese": "游戏开发",
+      "game_count": 18,
+      "weight": 8,
+      "group": "level_3"
+    },
+    {
+      "key": 9100133,
+      "tag": "Animation & Modeling",
+      "chinese": "动画制作和建模",
+      "game_count": 15,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100135,
+      "tag": "Photo Editing",
+      "chinese": "照片编辑",
+      "game_count": 15,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100141,
+      "tag": "Audio Production",
+      "chinese": "音频制作",
+      "game_count": 11,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100154,
+      "tag": "Video Production",
+      "chinese": "视频制作",
+      "game_count": 8,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100161,
+      "tag": "Software Training",
+      "chinese": "软件培训",
+      "game_count": 6,
+      "weight": 9,
+      "group": "level_3"
+    },
+    {
+      "key": 9100203,
+      "tag": "Benchmark",
+      "chinese": "标杆测试",
+      "game_count": 1,
+      "weight": 10,
+      "group": "level_3"
+    },
+    {
+      "key": 9100204,
+      "tag": "Hardware",
+      "chinese": "硬件",
+      "game_count": 1,
+      "weight": 10,
+      "group": "level_3"
+    }
+  ]
+}

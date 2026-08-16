@@ -3,6 +3,10 @@ const apiKeyInput = document.querySelector("#api-key");
 const searchButton = document.querySelector("#search");
 const refreshButton = document.querySelector("#refresh");
 const previousBatchButton = document.querySelector("#previous-batch");
+const bottomRefreshButton = document.querySelector("#bottom-refresh");
+const bottomPreviousBatchButton = document.querySelector("#bottom-previous-batch");
+const batchPagination = document.querySelector("#batch-pagination");
+const batchPages = document.querySelector("#batch-pages");
 const status = document.querySelector("#status");
 const results = document.querySelector("#results");
 const player = document.querySelector("#player");
@@ -25,6 +29,7 @@ const applyPreferencesButton = document.querySelector("#apply-preferences");
 const preferenceLimit = document.querySelector("#preference-limit");
 const preferenceTitle = document.querySelector("#preference-title");
 const modeGiftButton = document.querySelector("#mode-gift");
+const modeGachaButton = document.querySelector("#mode-gacha");
 const modeSeedButton = document.querySelector("#mode-seed");
 const modeNote = document.querySelector("#mode-note");
 const profileLabel = document.querySelector("#profile-label");
@@ -42,6 +47,7 @@ const scoreMessage = document.querySelector("#score-message");
 const scoreResult = document.querySelector("#score-result");
 const categoryState = {};
 let seedMode = false;
+let gachaMode = false;
 let wishlistGames = [];
 let loadingTimer;
 let giftMessageIndex = -1;
@@ -57,7 +63,7 @@ const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (character) => ({
 const EVIDENCE_DISPLAY_EXPONENT = 2;
 
 const giftMessageTemplates = [
-  "这是我在 Gift Scout 里为你挑的礼物，希望你会喜欢。",
+  "这是我在 Gifi 里为你挑的礼物，希望你会喜欢。",
   "看到这些游戏时第一个想到的就是你，愿它们给你带来一点新乐趣。",
   "给你的游戏库添几款新冒险，慢慢玩，不着急通关。",
   "我认真研究了你的游戏口味，挑了这些送给你。希望正中下怀。",
@@ -113,13 +119,13 @@ function renderPreferenceTags(tags, appliedTagIds, appliedExcludedIds = []) {
   preferenceConfirmation.hidden = tags.length === 0;
   const updatePreferenceSelectionStatus = () => {
     const parts = [];
-    if (activeTagIds.size) parts.push(`想要 ${activeTagIds.size}/3`);
+      if (activeTagIds.size) parts.push(`加权 ${activeTagIds.size}/3`);
     if (excludedTagIds.size) parts.push(`排除 ${excludedTagIds.size}`);
-    preferenceLimit.textContent = parts.length ? `${parts.join("　")}　⌄` : "点一下想要，再点一下排除　可选　⌄";
+      preferenceLimit.textContent = parts.length ? `${parts.join("　")}　⌄` : "单击加权　双击排除　最多 3 个　⌄";
     applyPreferencesButton.disabled = activeTagIds.size === 0 && excludedTagIds.size === 0;
     applyPreferencesButton.textContent = parts.length ? `应用（${parts.join("，")}）` : "应用偏好";
   };
-  const groups = ["和谁玩", "最近玩", "爱玩的"];
+  const groups = ["和谁玩", "最近玩", "喜欢玩"];
   preferenceTags.replaceChildren(...groups.map((group) => {
     const board = document.createElement("section");
     board.className = "preference-board";
@@ -133,37 +139,48 @@ function renderPreferenceTags(tags, appliedTagIds, appliedExcludedIds = []) {
       const button = document.createElement("button");
       button.type = "button";
       button.className = "preference-tag";
-      const mark = document.createElement("span");
-      mark.className = "preference-mark";
-      const text = document.createElement("span");
-      text.textContent = tag.name;
-      button.append(mark, text);
+      button.textContent = tag.name;
       const paint = () => {
         const wanted = activeTagIds.has(tag.tag_id);
         const excluded = excludedTagIds.has(tag.tag_id);
         button.classList.toggle("is-wanted", wanted);
         button.classList.toggle("is-excluded", excluded);
-        mark.textContent = wanted ? "✓" : excluded ? "✕" : "＋";
-        button.setAttribute("aria-label", `${tag.name}：${wanted ? "想要" : excluded ? "排除" : "未选"}`);
+        button.setAttribute("aria-label", `${tag.name}：${wanted ? "加权" : excluded ? "排除" : "未选"}`);
       };
-      button.addEventListener("click", () => {
-        if (activeTagIds.has(tag.tag_id)) {
-          activeTagIds.delete(tag.tag_id);
-          excludedTagIds.add(tag.tag_id);
-        } else if (excludedTagIds.has(tag.tag_id)) {
-          excludedTagIds.delete(tag.tag_id);
-        } else if (activeTagIds.size >= 3) {
-          preferenceLimit.textContent = "最多只能选 3 个想要的标签　⌄";
-          return;
-        } else {
-          activeTagIds.add(tag.tag_id);
-        }
+      let clickTimer;
+      const applyState = (state) => {
+        activeTagIds.delete(tag.tag_id);
+        excludedTagIds.delete(tag.tag_id);
+        if (state === "wanted") activeTagIds.add(tag.tag_id);
+        if (state === "excluded") excludedTagIds.add(tag.tag_id);
         paint();
         updatePreferenceSelectionStatus();
+      };
+      button.addEventListener("click", () => {
+        clearTimeout(clickTimer);
+        clickTimer = setTimeout(() => {
+          if (!activeTagIds.has(tag.tag_id) && !excludedTagIds.has(tag.tag_id) && activeTagIds.size >= 3) {
+            preferenceLimit.textContent = "最多只能加权 3 个标签　⌄";
+            return;
+          }
+          applyState(activeTagIds.has(tag.tag_id) ? "neutral" : "wanted");
+        }, 220);
+      });
+      button.addEventListener("dblclick", (event) => {
+        event.preventDefault();
+        clearTimeout(clickTimer);
+        applyState(excludedTagIds.has(tag.tag_id) ? "neutral" : "excluded");
       });
       paint();
       return button;
     }));
+    if (!groupTags.length) {
+      // Kept visible, or a quiet three months looks like the feature broke.
+      const empty = document.createElement("span");
+      empty.className = "preference-empty";
+      empty.textContent = group === "最近玩" ? "近三个月没有游玩记录" : "暂无";
+      tagList.replaceChildren(empty);
+    }
     board.append(title, tagList);
     return board;
   }));
@@ -217,6 +234,10 @@ const MATCH_TIER_KEYS = { UR: "ur", SSR: "ssr", SR: "sr", R: "rare", N: "common"
 
 function matchBadge(game, label = "匹配分") {
   const value = Math.max(0, Math.min(100, Number(game.match_percent) || 0));
+  // Rarity grades belong to the gacha experience; elsewhere the number stands alone.
+  if (!gachaMode) {
+    return `<span class="match-badge tier-plain"><b>${Math.round(value)}</b><i>${label}</i></span>`;
+  }
   const name = game.match_tier || "N";
   const key = MATCH_TIER_KEYS[name] || "common";
   return `<span class="match-badge tier-${key}" title="${esc(game.match_tier_note || "")}"><b>${value}</b><i>${label}</i><em>${esc(name)}</em></span>`;
@@ -274,10 +295,25 @@ function renderWishlist() {
   giftMessageText.textContent = buildGiftMessage();
   wishlistList.replaceChildren(...wishlistGames.map((game) => {
     const item = document.createElement("article");
-    item.className = "wishlist-item";
+      item.className = `wishlist-item${game.wishlistTier ? ` wishlist-tier-${game.wishlistTier.toLowerCase()}` : ""}`;
     item.innerHTML = `<img src="${game.image}" alt="" /><span>${game.name}</span><span>${game.price_note}</span><a href="https://store.steampowered.com/app/${game.app_id}/?cc=cn" target="_blank" rel="noreferrer">Steam ↗</a><button type="button" aria-label="移除 ${game.name}">×</button>`;
     item.querySelector("button").addEventListener("click", () => { wishlistGames = wishlistGames.filter((entry) => entry.app_id !== game.app_id); renderWishlist(); });
     return item;
+  }));
+}
+
+function updateBatchPagination(state) {
+  batchPagination.hidden = state.batches.length === 0;
+  bottomPreviousBatchButton.hidden = state.batchIndex <= 0;
+  batchPages.replaceChildren(...state.batches.map((_, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "batch-page";
+    button.textContent = String(index + 1);
+    button.disabled = index === state.batchIndex;
+    button.setAttribute("aria-label", `跳转到第 ${index + 1} 批推荐`);
+    button.addEventListener("click", () => showBatch(state, index));
+    return button;
   }));
 }
 
@@ -289,6 +325,7 @@ function showBatch(state, index) {
   player.innerHTML = batch.player;
   librarySize.textContent = batch.librarySize;
   previousBatchButton.hidden = index <= 0;
+    updateBatchPagination(state);
   results.hidden = false;
   setStatus("");
   window.scrollTo({ top: results.offsetTop - 20, behavior: "smooth" });
@@ -297,12 +334,15 @@ function showBatch(state, index) {
 async function findGifts(refresh = false) {
   const profile = profileInput.value.trim();
   const apiKey = apiKeyInput ? apiKeyInput.value.trim() : "";
-  const priority = document.querySelector('input[name="priority"]:checked').value;
+  // Gacha is the playful balanced view. Seed keeps the chosen scoring strategy.
+  const priority = gachaMode ? "balanced" : document.querySelector('input[name="priority"]:checked').value;
+  const stateKey = `${seedMode ? "seed" : gachaMode ? "gacha" : "gift"}:${priority}`;
   const minPrice = Number(minPriceInput.value || 0);
   const maxPrice = Number(maxPriceInput.value || 9999);
-  const state = categoryState[priority] || { shownAppIds: [], evidenceUseCounts: {}, batches: [], batchIndex: -1 };
-  categoryState[priority] = state;
-  if (!refresh) {
+  const state = categoryState[stateKey] || { shownAppIds: [], evidenceUseCounts: {}, batches: [], batchIndex: -1 };
+  categoryState[stateKey] = state;
+  // A new priority/mode is a new sequence even if its button was used to refresh.
+  if (!refresh || activePriority !== stateKey) {
     state.shownAppIds = [];
     state.evidenceUseCounts = {};
     state.batches = [];
@@ -331,13 +371,15 @@ async function findGifts(refresh = false) {
   searchButton.disabled = true;
   refreshButton.disabled = true;
   previousBatchButton.disabled = true;
+    bottomRefreshButton.disabled = true;
+    bottomPreviousBatchButton.disabled = true;
   if (!refresh) results.hidden = true;
   startLoading();
   try {
     const response = await fetch(seedMode ? "/api/seed-recommendations" : "/api/recommendations", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ profile, ...(seedMode ? { owner_profile: ownerProfileInput.value.trim() } : {}), ...(apiKey ? { api_key: apiKey } : {}), exclude_app_ids: state.shownAppIds, evidence_use_counts: state.evidenceUseCounts, active_tag_ids: [...activeTagIds], excluded_tag_ids: [...excludedTagIds], priority, min_price: minPrice, max_price: maxPrice }),
+      body: JSON.stringify({ profile, ...(seedMode ? { owner_profile: ownerProfileInput.value.trim() } : {}), ...(apiKey ? { api_key: apiKey } : {}), gacha: gachaMode, exclude_app_ids: state.shownAppIds, evidence_use_counts: state.evidenceUseCounts, active_tag_ids: [...activeTagIds], excluded_tag_ids: [...excludedTagIds], priority, min_price: minPrice, max_price: maxPrice }),
     });
     const contentType = response.headers.get("content-type") || "";
     const data = contentType.includes("application/json") ? await response.json() : {};
@@ -347,12 +389,14 @@ async function findGifts(refresh = false) {
     if (data.recycled) {
       state.shownAppIds = [];
       state.evidenceUseCounts = {};
+        state.batches = [];
+        state.batchIndex = -1;
       batchStartNumber = 1;
       setStatus("这一分类的未展示游戏已用完，已重新开始本分类。", false);
     }
     state.shownAppIds.push(...data.recommendations.map((game) => game.app_id));
     data.recommendations.flatMap((game) => game.evidence_app_ids).forEach((appId) => { state.evidenceUseCounts[appId] = (state.evidenceUseCounts[appId] || 0) + 1; });
-    activePriority = priority;
+    activePriority = stateKey;
     preferenceTitle.textContent = `${data.profile.name} 喜欢玩的游戏标签`;
     renderPreferenceTags(data.preference_tags || [], data.applied_tag_ids || [], data.applied_excluded_tag_ids || []);
     player.innerHTML = seedMode
@@ -364,6 +408,8 @@ async function findGifts(refresh = false) {
     const batchCards = data.recommendations.map((game, index) => {
       const item = document.createElement("article");
       item.className = "game";
+      // The whole card carries the grade in gacha mode, so a pull reads at a glance.
+      if (gachaMode && game.match_tier) item.classList.add(`card-${game.match_tier.toLowerCase()}`);
       item.style.animationDelay = `${index * 70}ms`;
       const score = game.confidence === "基础偏好"
         ? `<span class="metadata-basic">匹配类型：${esc((game.matched_genres || []).join(" / ") || "待补充")}</span>`
@@ -377,13 +423,20 @@ async function findGifts(refresh = false) {
         const source = label.source_game;
         if (!evidenceById.has(source.app_id)) evidenceById.set(source.app_id, { game: source, tags: [] });
         const entry = evidenceById.get(source.app_id);
-        if (!entry.tags.includes(label.name)) entry.tags.push(label.name);
+          if (!entry.tags.some((tag) => tag.name === label.name)) entry.tags.push({ name: label.name, rank: label.source_tag_rank });
       });
-      // Weighted rather than sorted: deeply played games should be cited most
-      // often, but a niche corner of the library still deserves its share of the
-      // spotlight instead of being excluded outright.
+        // Lead with a game where the matched tag is a headline feature. The later
+        // examples can still vary with playtime, so the evidence does not repeat.
       const evidencePool = [...evidenceById.values()];
       const evidenceEntries = [];
+        if (evidencePool.length) {
+          evidencePool.sort((left, right) => {
+            const leftRank = Math.min(...left.tags.map((tag) => tag.rank || Infinity));
+            const rightRank = Math.min(...right.tags.map((tag) => tag.rank || Infinity));
+            return leftRank - rightRank || (right.game.engagement_score ?? 0) - (left.game.engagement_score ?? 0);
+          });
+          evidenceEntries.push(evidencePool.shift());
+        }
       while (evidencePool.length && evidenceEntries.length < 3) {
         const weights = evidencePool.map((entry) => Math.max(0.1, entry.game.engagement_score ?? 1) ** EVIDENCE_DISPLAY_EXPONENT);
         let threshold = Math.random() * weights.reduce((sum, weight) => sum + weight, 0);
@@ -400,9 +453,14 @@ async function findGifts(refresh = false) {
         if (match.recently_played) signals.push("最近游玩");
         // Idle games and desktop pets bank hours while nobody is playing them.
         const passiveNote = match.passive_playtime
-          ? `<span class="evidence-note" title="挂机、桌面宠物类应用在后台也会计时，所以时长已按 20% 折算">挂机时长已折算</span>`
+          ? `<span class="evidence-note" title="这类游戏在后台或等待中也会计时，因此时长已适当折算">时长已折算</span>`
           : "";
-        const matchedTags = tags.slice(0, 3).map((tag) => `<em>${esc(tag)}</em>`).join("");
+        const matchedTags = tags.slice(0, 3).map((tag) => {
+          const isSecondary = tag.rank && tag.rank > 3;
+          const detail = tag.rank ? (isSecondary ? `副标签，标签序号 #${tag.rank}；不代表这是这款游戏的主要标签` : `主标签，标签序号 #${tag.rank}`) : "";
+          const rankLabel = tag.rank ? `<small>#${tag.rank}</small>` : "";
+          return `<em class="${isSecondary ? "is-secondary" : "is-primary"}"${detail ? ` title="${detail}"` : ""}>${esc(tag.name)}${rankLabel}</em>`;
+        }).join("");
         return `<li><strong>《${esc(match.name)}》</strong><span>${signals.join(" · ")}</span>${passiveNote}<div class="evidence-tags">${matchedTags}</div></li>`;
       };
       const generalTags = generalDetails.map((label) => `<div class="general-tag"><strong>${esc(label.name)}</strong><small>第 ${label.candidate_tag_rank} 位</small></div>`).join("");
@@ -430,14 +488,15 @@ async function findGifts(refresh = false) {
       const contentWarning = game.content_warning ? `<p class="content-warning">${game.content_warning_text}</p>` : "";
       const saved = wishlistGames.some((entry) => entry.app_id === game.app_id);
       const ownerNote = seedMode && game.owner_hours !== undefined ? `<p class="owner-note">你玩过 ${game.owner_hours} 小时</p>` : "";
-      item.innerHTML = `<aside class="game-rail"><img src="${game.image}" alt="${esc(game.name)}" />${matchSections}</aside><div class="game-content"><p class="game-number">${seedMode ? "种草" : "推荐"} ${String(batchStartNumber + index).padStart(2, "0")}${game.store_source ? ` / ${esc(game.store_source)}` : ""}</p><h3>${esc(game.name)}</h3><p class="metadata">${score}</p>${ownerNote}${contentWarning}${evidenceSection}<section class="price-block">${storeInfo}<div class="price-value"><strong>${priceDisplay}</strong><em>${discount}</em>${originalPriceDisplay}</div><a href="https://steamdb.info/app/${game.app_id}/" target="_blank" rel="noreferrer" title="在 SteamDB 查看价格历史；数据可能不覆盖中国区">历史价 ↗</a></section><div class="card-actions"><a href="https://store.steampowered.com/app/${game.app_id}/?cc=cn" target="_blank" rel="noreferrer">Steam ↗</a><button type="button" class="save-game" ${saved ? "disabled" : ""} aria-label="加入待购买清单">${saved ? "已加入" : "♡"}</button></div></div>`;
-      item.querySelector(".save-game").addEventListener("click", () => { wishlistGames.push(game); renderWishlist(); item.querySelector(".save-game").textContent = "已加入"; item.querySelector(".save-game").disabled = true; });
+      item.innerHTML = `<aside class="game-rail"><img src="${game.image}" alt="${esc(game.name)}" />${matchSections}</aside><div class="game-content"><p class="game-number">${seedMode ? "种草" : (gachaMode ? "抽卡" : "推荐")} ${String(batchStartNumber + index).padStart(2, "0")}${game.store_source ? ` / ${esc(game.store_source)}` : ""}</p><h3>${esc(game.name)}</h3><p class="metadata">${score}</p>${ownerNote}${contentWarning}${evidenceSection}<section class="price-block">${storeInfo}<div class="price-value"><strong>${priceDisplay}</strong><em>${discount}</em>${originalPriceDisplay}</div><a href="https://steamdb.info/app/${game.app_id}/" target="_blank" rel="noreferrer" title="在 SteamDB 查看价格历史；数据可能不覆盖中国区">历史价 ↗</a></section><div class="card-actions"><a href="https://store.steampowered.com/app/${game.app_id}/?cc=cn" target="_blank" rel="noreferrer">Steam ↗</a><button type="button" class="save-game" ${saved ? "disabled" : ""} aria-label="加入待购买清单">${saved ? "已加入" : "♡"}</button></div></div>`;
+      item.querySelector(".save-game").addEventListener("click", () => { wishlistGames.push({ ...game, wishlistTier: gachaMode ? game.match_tier : null }); renderWishlist(); item.querySelector(".save-game").textContent = "已加入"; item.querySelector(".save-game").disabled = true; });
       return item;
     });
     state.batches.push({ cards: batchCards, player: player.innerHTML, librarySize: librarySize.textContent });
     state.batchIndex = state.batches.length - 1;
     gameList.replaceChildren(...batchCards);
     previousBatchButton.hidden = state.batchIndex <= 0;
+      updateBatchPagination(state);
     results.hidden = false;
     if (!data.recycled) setStatus("");
   } catch (error) {
@@ -448,32 +507,47 @@ async function findGifts(refresh = false) {
     searchButton.disabled = false;
     refreshButton.disabled = false;
     previousBatchButton.disabled = false;
+      bottomRefreshButton.disabled = false;
+      bottomPreviousBatchButton.disabled = false;
   }
 }
 
-function setMode(useSeedMode) {
-  seedMode = useSeedMode;
-  document.body.dataset.mode = seedMode ? "seed" : "gift";
-  modeGiftButton.classList.toggle("is-active", !seedMode);
-  modeSeedButton.classList.toggle("is-active", seedMode);
-  modeGiftButton.setAttribute("aria-selected", String(!seedMode));
-  modeSeedButton.setAttribute("aria-selected", String(seedMode));
+function setMode(mode) {
+  seedMode = mode === "seed";
+  gachaMode = mode === "gacha";
+  document.body.dataset.mode = mode;
+  [[modeGiftButton, "gift"], [modeGachaButton, "gacha"], [modeSeedButton, "seed"]].forEach(([button, key]) => {
+    button.classList.toggle("is-active", mode === key);
+    button.setAttribute("aria-selected", String(mode === key));
+  });
   ownerProfileRow.hidden = !seedMode;
-  priorityFieldset.hidden = seedMode;
+  priorityFieldset.hidden = gachaMode;
+    // Gacha has its own stretched score scale; seed gets the caveat instead of bands.
+  document.querySelector("#seed-score-note").hidden = !seedMode;
+    document.querySelector("#score-guide").hidden = gachaMode;
+    document.querySelector("#score-guide-list").hidden = seedMode;
   profileLabel.innerHTML = seedMode
     ? '<span class="role-tag role-target">TA</span>要种草的对象（TA 的 Steam 个人资料）'
     : "Steam 个人资料";
-  introTitle.innerHTML = seedMode ? '送 TA 一款<br /><em>你想种草</em>的游戏 🌱' : "给 TA 挑一款<br />游戏礼物 🎁";
+  introTitle.innerHTML = seedMode
+    ? '送 TA 一款<br /><em>你想种草</em>的游戏 🌱'
+    : (gachaMode ? '为 TA 抽一款<br />游戏礼物 🎴' : "给 TA 挑一款<br />游戏礼物 🎁");
   introEyebrow.textContent = seedMode
     ? "把你玩过并认可的游戏，推荐给合适的那个人"
-    : "从 TA 的游戏库里，挑一份刚好合口味的礼物";
+    : (gachaMode ? "同样的匹配算法，换一种越翻越有盼头的节奏" : "从 TA 的游戏库里，挑一份刚好合口味的礼物");
   introLede.textContent = seedMode
     ? "输入你和 TA 的公开 Steam 个人资料，从你玩过的游戏里挑出最合 TA 口味的几款。"
-    : "输入公开 Steam 个人资料，看看哪些游戏更像一份会让 TA 开心的礼物。";
+    : (gachaMode
+      ? "分数算法完全相同，但高稀有度会留到后面几页，并有保底机制，适合慢慢翻着找惊喜。"
+      : "输入公开 Steam 个人资料，看看哪些游戏更像一份会让 TA 开心的礼物。");
   modeNote.textContent = seedMode
     ? "从你自己玩过的游戏里，挑 TA 还没有、又合 TA 口味的推荐给 TA。"
-    : "从 Steam 商店目录里，挑 TA 还没有的游戏作为礼物。";
-  searchButton.innerHTML = seedMode ? '种草推荐 <span aria-hidden="true">→</span>' : '寻找礼物 <span aria-hidden="true">→</span>';
+    : (gachaMode
+      ? "优先呈现节奏感：前几页先给稳的，越往后越可能翻出高稀有度。"
+      : "从 Steam 商店目录里，优先把匹配分最高的游戏排在前面。");
+  searchButton.innerHTML = seedMode
+    ? '种草推荐 <span aria-hidden="true">→</span>'
+    : (gachaMode ? '开始抽卡 <span aria-hidden="true">→</span>' : '寻找礼物 <span aria-hidden="true">→</span>');
   Object.keys(categoryState).forEach((key) => delete categoryState[key]);
   activePriority = null;
   results.hidden = true;
@@ -678,11 +752,17 @@ feedbackSubmit.addEventListener("click", async () => {
 
 searchButton.addEventListener("click", findGifts);
 refreshButton.addEventListener("click", () => findGifts(true));
-applyPreferencesButton.addEventListener("click", () => findGifts(false));
+bottomRefreshButton.addEventListener("click", () => findGifts(true));
+applyPreferencesButton.addEventListener("click", async () => {
+  await findGifts(false);
+  // The button sits below the tag panel, so the new cards would otherwise open off-screen.
+  document.querySelector("#game-list")?.scrollIntoView({ behavior: "smooth", block: "start" });
+});
 backgroundSwatches.forEach((swatch) => swatch.addEventListener("click", () => setBackground(swatch.dataset.background)));
 setBackground(localStorage.getItem("gift-scout-background") || "mint");
-modeGiftButton.addEventListener("click", () => setMode(false));
-modeSeedButton.addEventListener("click", () => setMode(true));
+modeGiftButton.addEventListener("click", () => setMode("gift"));
+modeGachaButton.addEventListener("click", () => setMode("gacha"));
+modeSeedButton.addEventListener("click", () => setMode("seed"));
 scoreCheckButton.addEventListener("click", checkGameScore);
 scoreQueryInput.addEventListener("input", () => {
   clearTimeout(suggestTimer);
@@ -703,6 +783,11 @@ scoreQueryInput.addEventListener("keydown", (event) => {
 });
 ownerProfileInput.addEventListener("keydown", (event) => { if (event.key === "Enter") findGifts(); });
 previousBatchButton.addEventListener("click", () => {
+  const state = categoryState[activePriority];
+  if (!state || state.batchIndex <= 0) return;
+  showBatch(state, state.batchIndex - 1);
+});
+bottomPreviousBatchButton.addEventListener("click", () => {
   const state = categoryState[activePriority];
   if (!state || state.batchIndex <= 0) return;
   showBatch(state, state.batchIndex - 1);

@@ -22,10 +22,28 @@ input { min-width: 0; border: 1px solid var(--ink); border-radius: 0; background
 button { border: 1px solid var(--ink); border-radius: 0; background: var(--acid); color: var(--ink); cursor: pointer; padding: 0 22px; font: 700 15px "Space Grotesk", sans-serif; }
 button:hover { background: var(--coral); } button:disabled { cursor: wait; opacity: .6; }
 .privacy { margin: 11px 0 0; text-transform: none; }.catalog-notice { margin: 8px 0 0; color: #ad2819; font: 12px/1.4 "DM Mono", monospace; }
+.score-guide { margin: -5px 0 16px; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); padding: 7px 0; }
+.score-guide-list { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); margin: 0; padding: 0; list-style: none; text-align: center; }
+.score-guide-list li { display: grid; gap: 2px; min-width: 0; border-right: 1px solid var(--dot); padding: 1px 8px 2px; }
+.score-guide-list li:last-child { border-right: 0; }
+.score-guide-list li:nth-child(1) b { color: #08733a; }
+.score-guide-list li:nth-child(2) b { color: #416b0d; }
+.score-guide-list li:nth-child(3) b { color: #8b5600; }
+.score-guide-list li:nth-child(4) b { color: #a74b12; }
+.score-guide-list li:nth-child(5) b { color: #9d2017; }
+.score-guide-list b { color: var(--ink); font: 700 13px "DM Mono", monospace; white-space: nowrap; }
+.score-guide-list span { color: var(--ink); font: 600 12px/1.35 "Noto Sans SC", sans-serif; }
+.score-guide-note { max-width: 760px; margin: 0 auto; border-left: 3px solid var(--coral); padding-left: 9px; color: var(--ink); font: 600 12px/1.5 "Noto Sans SC", sans-serif; }
+@media (max-width: 700px) { .score-guide-list { grid-template-columns: 1fr; text-align: left; } .score-guide-list li { grid-template-columns: 82px minmax(0, 1fr); align-items: baseline; border-right: 0; border-bottom: 1px solid var(--dot); padding: 4px 8px; } .score-guide-list li:last-child { border-bottom: 0; } }
 .status { min-height: 24px; margin: 22px 0; font: 14px "DM Mono", monospace; } .status.error { color: #ad2819; }
-.results { margin-top: 34px; }.result-header { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 20px; }.result-header div { display: flex; align-items: center; gap: 12px; }.result-header img { width: 42px; height: 42px; border-radius: 50%; }.result-header h2 { margin: 0; font-size: 27px; }.result-header p { margin: 0; color: var(--muted); font: 12px "DM Mono", monospace; }.result-actions { display: flex; align-items: center; gap: 12px; }.result-actions button { height: 36px; padding: 0 12px; font-size: 13px; }.preference-confirmation { border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); margin-bottom: 18px; background: var(--paper); }.preference-confirmation summary { display: flex; align-items: center; justify-content: space-between; cursor: pointer; list-style: none; background: var(--acid); padding: 12px 14px; font: 700 16px "Noto Serif SC", serif; }.preference-confirmation summary::-webkit-details-marker { display: none; }.preference-confirmation summary span:last-child { color: var(--ink); font: 11px "DM Mono", monospace; }.preference-confirmation[open] summary { border-bottom: 1px solid var(--ink); }.preference-confirmation summary:hover { background: var(--coral); }.preference-board { min-width: 0; }.preference-board > p { margin: 0 0 7px; color: var(--muted); font: 12px "DM Mono", monospace; }.preference-confirmation button { height: 36px; margin: 0 14px 12px; padding: 0 12px; font-size: 13px; }
+.results { margin-top: 34px; }.result-header { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 20px; }.result-header div { display: flex; align-items: center; gap: 12px; }.result-header img { width: 42px; height: 42px; border-radius: 50%; }.result-header h2 { margin: 0; font-size: 27px; }.result-header p { margin: 0; color: var(--muted); font: 12px "DM Mono", monospace; }.result-actions { display: flex; align-items: center; gap: 12px; }.result-actions button { height: 36px; padding: 0 12px; font-size: 13px; }.preference-confirmation { border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); margin-bottom: 18px; background: var(--paper); }.preference-confirmation summary { display: flex; align-items: center; justify-content: space-between; cursor: pointer; list-style: none; background: var(--acid); padding: 6px 12px; font: 700 13px "Noto Serif SC", serif; }.preference-confirmation summary::-webkit-details-marker { display: none; }.preference-confirmation summary span:last-child { color: var(--ink); font: 11px "DM Mono", monospace; }.preference-confirmation[open] summary { border-bottom: 1px solid var(--ink); }.preference-confirmation summary:hover { background: var(--coral); }.preference-board { min-width: 0; }.preference-confirmation button { height: 26px; margin: 0 12px 8px; padding: 0 10px; font-size: 12px; }
 .game-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 2px solid var(--ink); }.game { display: grid; grid-template-columns: minmax(150px, 38%) minmax(0, 1fr); gap: 18px; padding: 18px 0; border-bottom: 1px solid var(--ink); animation: appear .4s both; }.game:nth-child(odd) { border-right: 1px solid var(--ink); padding-right: 16px; }.game:nth-child(even) { padding-left: 16px; }.game-rail, .game-content { min-width: 0; }.game-rail > img { width: 100%; aspect-ratio: 1.7; object-fit: cover; }.game-number { margin: 0 0 5px; }.game h3 { margin: 0; font-size: 25px; line-height: 1.08; }.reason { margin: 8px 0 12px; font-size: 16px; line-height: 1.35; }.game a { color: var(--ink); font: 13px "DM Mono", monospace; text-decoration-thickness: 1px; text-underline-offset: 3px; }
-.metadata { margin: 8px 0 0; color: var(--muted); font: 14px "DM Mono", monospace; line-height: 1.4; }.content-warning { margin: 10px 0 0; border-left: 3px solid #ad2819; padding-left: 8px; color: #ad2819; font: 700 13px/1.35 "Space Grotesk", sans-serif; }.match-block, .evidence-block, .price-block { margin-top: 14px; border-top: 1px solid #c9c1b4; padding-top: 9px; }.match-block > p, .evidence-block > p { margin: 0 0 8px; color: var(--muted); font: 13px "DM Mono", monospace; text-transform: uppercase; }.level-3-block { border-top-color: var(--violet); }.level-3-block > p { color: var(--violet); }.level-3-block .tag-chip { border-color: var(--violet); background: var(--violet); color: #fff; }.evidence-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px; }.evidence-tags em { border: 1px solid var(--dot); background: rgba(214, 255, 71, .45); padding: 1px 5px; color: var(--ink); font: 12px "DM Mono", monospace; font-style: normal; }.tag-list { display: grid; gap: 6px; }.tag-chip { width: fit-content; max-width: 100%; align-items: baseline; gap: 5px; border: 1px solid var(--ink); background: var(--acid); padding: 5px 7px; font: 14px "DM Mono", monospace; }.general-tag-list { display: grid; gap: 8px; }.general-tag { display: grid; gap: 1px; border-left: 2px solid var(--coral); padding-left: 7px; }.general-tag strong { font-size: 15px; line-height: 1.2; }.general-tag small { color: var(--muted); font: 12px "DM Mono", monospace; }.empty-evidence { color: var(--muted); font: 13px "DM Mono", monospace; }.evidence-block ul { display: grid; gap: 9px; margin: 0; padding: 0; list-style: none; }.evidence-block li { display: grid; gap: 3px; font-size: 16px; line-height: 1.35; }.evidence-block li strong { overflow-wrap: anywhere; }.evidence-block li span { color: var(--muted); font: 13px "DM Mono", monospace; }.price-block { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: baseline; }.price-block span { color: var(--muted); font: 13px "DM Mono", monospace; }.price-block .review-summary { color: var(--ink); font: 700 14px/1.35 "Space Grotesk", sans-serif; }.price-block .release-date { color: var(--ink); font-weight: 700; }.price-value { display: flex; flex-wrap: wrap; justify-content: end; align-items: baseline; gap: 6px; }.price-block strong { font: 700 23px "DM Mono", monospace; }.price-block em { color: #ad2819; font: 700 14px "DM Mono", monospace; font-style: normal; }.price-block del { color: var(--muted); font: 12px "DM Mono", monospace; }.price-block a { grid-column: 1; color: var(--muted); font-size: 12px; }.card-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 15px; }.card-actions button { height: 34px; min-width: 36px; padding: 0 9px; font-size: 20px; }.wishlist { margin-top: 42px; border-top: 2px solid var(--ink); }.wishlist h2 { margin: 16px 0 0; font-size: 22px; }.wishlist-summary { display: flex; align-items: baseline; gap: 10px; }.wishlist-summary strong { font: 14px "DM Mono", monospace; }.wishlist-list { border-top: 1px solid var(--ink); }.wishlist-item { display: grid; grid-template-columns: 70px minmax(0, 1fr) auto auto auto; align-items: center; gap: 12px; border-bottom: 1px solid var(--ink); padding: 10px 0; font-size: 15px; }.wishlist-item img { width: 70px; aspect-ratio: 1.7; object-fit: cover; }.wishlist-item span:nth-child(3), .wishlist-item a { color: var(--muted); font: 13px "DM Mono", monospace; }.wishlist-item button { height: 30px; min-width: 30px; padding: 0; font-size: 18px; }.gift-message { margin-top: 24px; border-top: 1px solid var(--ink); padding: 14px 0 0; }.gift-message > p { margin: 0 0 8px; color: var(--muted); font: 12px "DM Mono", monospace; text-transform: uppercase; }.gift-message blockquote { max-width: 680px; margin: 0; font: 18px/1.45 Georgia, serif; }.gift-message-actions { display: flex; gap: 8px; margin-top: 12px; }.gift-message-actions button { height: 34px; padding: 0 12px; font-size: 13px; }.gift-message-actions button:last-child { background: #fffdf8; }.gift-message-actions button:last-child:hover { background: var(--coral); }.site-footer { margin-top: 58px; border-top: 1px solid var(--ink); padding-top: 14px; }.site-footer a { display: inline-flex; align-items: center; gap: 9px; color: var(--muted); font: 12px "DM Mono", monospace; text-decoration: none; }.site-footer a:hover { color: var(--ink); }.site-footer img { width: 28px; height: 28px; border-radius: 50%; }
+.batch-pagination { display: flex; justify-content: center; align-items: center; gap: 10px; margin: 18px 0 28px; }
+.batch-pagination > button { height: 32px; padding: 0 10px; font-size: 12px; }
+.batch-pages { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
+.batch-page { min-width: 30px; height: 30px; padding: 0 7px; background: transparent; font: 700 12px "DM Mono", monospace; }
+.batch-page:disabled { border-color: var(--ink); background: var(--ink); color: var(--paper); cursor: default; opacity: 1; }
+.metadata { margin: 8px 0 0; color: var(--muted); font: 14px "DM Mono", monospace; line-height: 1.4; }.content-warning { margin: 10px 0 0; border-left: 3px solid #ad2819; padding-left: 8px; color: #ad2819; font: 700 13px/1.35 "Space Grotesk", sans-serif; }.match-block, .evidence-block, .price-block { margin-top: 14px; border-top: 1px solid #c9c1b4; padding-top: 9px; }.match-block > p, .evidence-block > p { margin: 0 0 8px; color: var(--muted); font: 13px "DM Mono", monospace; text-transform: uppercase; }.level-3-block { border-top-color: var(--violet); }.level-3-block > p { color: var(--violet); }.level-3-block .tag-chip { border-color: var(--violet); background: var(--violet); color: #fff; }.evidence-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px; }.evidence-tags em { border: 1px solid var(--dot); background: rgba(214, 255, 71, .45); padding: 1px 5px; color: var(--ink); font: 12px "DM Mono", monospace; font-style: normal; }.tag-list { display: grid; gap: 6px; }.tag-chip { width: fit-content; max-width: 100%; align-items: baseline; gap: 5px; border: 1px solid var(--ink); background: var(--acid); padding: 5px 7px; font: 14px "DM Mono", monospace; }.general-tag-list { display: grid; gap: 8px; }.general-tag { display: grid; gap: 1px; border-left: 2px solid var(--coral); padding-left: 7px; }.general-tag strong { font-size: 15px; line-height: 1.2; }.general-tag small { color: var(--muted); font: 12px "DM Mono", monospace; }.empty-evidence { color: var(--muted); font: 13px "DM Mono", monospace; }.evidence-block ul { display: grid; gap: 9px; margin: 0; padding: 0; list-style: none; }.evidence-block li { display: grid; gap: 3px; font-size: 16px; line-height: 1.35; }.evidence-block li strong { overflow-wrap: anywhere; }.evidence-block li span { color: var(--muted); font: 13px "DM Mono", monospace; }.price-block { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: baseline; }.price-block span { color: var(--muted); font: 13px "DM Mono", monospace; }.price-block .review-summary { color: var(--ink); font: 700 14px/1.35 "Space Grotesk", sans-serif; }.price-block .release-date { color: var(--ink); font-weight: 700; }.price-value { display: flex; flex-wrap: wrap; justify-content: end; align-items: baseline; gap: 6px; }.price-block strong { font: 700 23px "DM Mono", monospace; }.price-block em { color: #ad2819; font: 700 14px "DM Mono", monospace; font-style: normal; }.price-block del { color: var(--muted); font: 12px "DM Mono", monospace; }.price-block a { flex-basis: 100%; color: var(--muted); font-size: 12px; }.card-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 15px; }.card-actions button { height: 34px; min-width: 36px; padding: 0 9px; font-size: 20px; }.wishlist { margin-top: 42px; border-top: 2px solid var(--ink); }.wishlist h2 { margin: 16px 0 0; font-size: 22px; }.wishlist-summary { display: flex; align-items: baseline; gap: 10px; }.wishlist-summary strong { font: 14px "DM Mono", monospace; }.wishlist-list { border-top: 1px solid var(--ink); }.wishlist-item { display: grid; grid-template-columns: 70px minmax(0, 1fr) auto auto auto; align-items: center; gap: 12px; border-bottom: 1px solid var(--ink); padding: 10px 0; font-size: 15px; }.wishlist-item img { width: 70px; aspect-ratio: 1.7; object-fit: cover; }.wishlist-item span:nth-child(3), .wishlist-item a { color: var(--muted); font: 13px "DM Mono", monospace; }.wishlist-item button { height: 30px; min-width: 30px; padding: 0; font-size: 18px; }.gift-message { margin-top: 24px; border-top: 1px solid var(--ink); padding: 14px 0 0; }.gift-message > p { margin: 0 0 8px; color: var(--muted); font: 12px "DM Mono", monospace; text-transform: uppercase; }.gift-message blockquote { max-width: 680px; margin: 0; font: 18px/1.45 Georgia, serif; }.gift-message-actions { display: flex; gap: 8px; margin-top: 12px; }.gift-message-actions button { height: 34px; padding: 0 12px; font-size: 13px; }.gift-message-actions button:last-child { background: #fffdf8; }.gift-message-actions button:last-child:hover { background: var(--coral); }.site-footer { margin-top: 58px; border-top: 1px solid var(--ink); padding-top: 14px; }.site-footer a { display: inline-flex; align-items: center; gap: 9px; color: var(--muted); font: 12px "DM Mono", monospace; text-decoration: none; }.site-footer a:hover { color: var(--ink); }.site-footer img { width: 28px; height: 28px; border-radius: 50%; }
 @keyframes appear { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 @media (max-width: 860px) { .game-list { grid-template-columns: 1fr; }.game:nth-child(odd) { border-right: 0; padding-right: 0; }.game:nth-child(even) { padding-left: 0; } }
 @media (max-width: 700px) { main { width: min(100% - 28px, 1100px); padding-top: 20px; } nav span { display: none; }.intro { padding: 78px 0 42px; }.lede { font-size: 17px; }.input-row { grid-template-columns: 1fr; } button { height: 50px; }.back-button { height: 30px; }.result-header { align-items: start; flex-direction: column; }.preference-confirmation button { width: 100%; }.game-list { grid-template-columns: 1fr; }.game:nth-child(odd) { border-right: 0; padding-right: 0; }.game:nth-child(even) { padding-left: 0; }.wishlist-item { grid-template-columns: 58px minmax(0, 1fr) auto; gap: 8px; }.wishlist-item img { width: 58px; }.wishlist-item span:nth-child(3) { grid-column: 2; }.wishlist-item a { grid-column: 2; }.wishlist-item button { grid-column: 3; grid-row: 1; } }
@@ -66,10 +84,12 @@ label:hover + .help-popover, .help-hint:hover ~ .help-popover, .help-hint:focus 
 .score-rows p { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 0; }
 .score-rows span:first-child { min-width: 68px; color: var(--muted); font: 12px "DM Mono", monospace; }
 @media (max-width: 640px) { .score-card { grid-template-columns: 1fr; } }
-.price-block { grid-template-columns: minmax(0, 1fr) auto; row-gap: 6px; }
-.price-block .review-summary { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-.review-summary b { font: 700 14px/1.3 "Space Grotesk", sans-serif; white-space: nowrap; }
-.review-summary i { color: var(--muted); font: normal 12px/1.3 "DM Mono", monospace; white-space: nowrap; }
+/* Two fixed columns let the no-wrap review line and the no-wrap price line grow
+   into each other. Wrapping the price onto its own line keeps both readable. */
+.price-block { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; column-gap: 10px; row-gap: 6px; }
+.price-block .review-summary { display: flex; flex-direction: column; gap: 1px; flex: 1 1 auto; min-width: 0; }
+.review-summary b { font: 700 14px/1.3 "Space Grotesk", sans-serif; overflow-wrap: anywhere; }
+.review-summary i { color: var(--muted); font: normal 12px/1.3 "DM Mono", monospace; overflow-wrap: anywhere; }
 .review-overwhelming b { color: #0f7a3d; }
 .review-very-positive b { color: #1f8f52; }
 .review-positive b { color: #6a8f1f; }
@@ -77,15 +97,16 @@ label:hover + .help-popover, .help-hint:hover ~ .help-popover, .help-hint:focus 
 .review-negative b { color: #ad2819; }
 .review-unknown b, .release-date b { color: var(--muted); }
 .price-block .release-date b { color: var(--ink); }
-.price-value { justify-content: end; white-space: nowrap; }
+.price-value { flex: 0 0 auto; justify-content: end; white-space: nowrap; }
 .seed-requirements { margin: 7px 0 0; border-left: 3px solid var(--coral); padding-left: 9px; color: var(--muted); font: 12px/1.5 "DM Mono", monospace; }
 .seed-requirements strong { color: var(--ink); }
 .result-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; margin-bottom: 18px; }
 .result-panels > details { margin-bottom: 0; }
 .score-lookup { border: 1px solid var(--ink); background: transparent; }
-.score-lookup > summary { display: flex; justify-content: space-between; gap: 10px; align-items: center; border-bottom: 1px dashed var(--dot); background: transparent; padding: 9px 12px; cursor: pointer; font: 600 15px "Space Grotesk", sans-serif; list-style: none; }
+.score-lookup > summary { display: flex; justify-content: space-between; gap: 10px; align-items: center; border-bottom: 1px solid var(--ink); background: #60c9bd; padding: 11px 14px; cursor: pointer; font: 700 16px "Noto Serif SC", serif; list-style: none; }
+.score-lookup > summary:hover { background: #2c9f96; color: #fff; }
 .score-lookup[open] > summary { border-bottom-style: solid; }
-.score-lookup > summary:hover { background: rgba(21, 25, 29, .05); }
+.score-lookup { margin-top: 18px; }
 .suggest-wrap { position: relative; flex: 1; min-width: 0; }
 .suggest-wrap input { width: 100%; }
 .suggest-list { position: absolute; z-index: 20; top: calc(100% + 2px); left: 0; right: 0; max-height: 260px; overflow-y: auto; margin: 0; border: 1px solid var(--ink); background: var(--paper); padding: 0; list-style: none; box-shadow: 4px 4px 0 var(--ink); }
@@ -156,7 +177,7 @@ body[data-mode="seed"] .seed-requirements { border-left-color: #2f9e44; }
 
 .tier-common { border-color: #5f7180; background: #e3eaf0; color: #33485c; }
 .tier-rare { border-color: #4a86c8; background: #e6f0fb; color: #1d4e86; }
-.tier-sr { border-color: #8557c8; background: #f0e8fc; color: #4d2585; }
+.tier-sr { border-color: #6f34c4; background: linear-gradient(135deg, #efe4ff 0%, #dcc6ff 55%, #c9a6ff 100%); color: #3d1a72; box-shadow: 0 0 0 2px rgba(111, 52, 196, .2); }
 .tier-ssr { border-color: #c99320; background: linear-gradient(135deg, #fff5d6 0%, #ffe9a8 45%, #ffd76b 100%); color: #7a5406; box-shadow: 0 0 0 2px rgba(201, 147, 32, .18); }
 .tier-ur { border-color: transparent; background: linear-gradient(115deg, #ff6b8b, #ffb347, #ffee5c, #6bffb8, #62c9ff, #b47bff, #ff6b8b); background-size: 320% 100%; color: #17121f; animation: tier-ur-shift 5s linear infinite; box-shadow: 0 0 0 2px rgba(255, 255, 255, .55), 0 3px 12px rgba(120, 60, 200, .35); }
 .tier-ur b, .tier-ur i, .tier-ur em { text-shadow: 0 1px 0 rgba(255, 255, 255, .75); }
@@ -172,19 +193,24 @@ body[data-mode="seed"] .seed-requirements { border-left-color: #2f9e44; }
 .seed-from b { box-shadow: inset 0 -8px 0 var(--acid); }
 .seed-to b { box-shadow: inset 0 -8px 0 var(--coral); }
 .seed-arrow { color: var(--muted); font: 20px "DM Mono", monospace; }
-.preference-tag { display: inline-flex; align-items: center; gap: 5px; border: 1px solid rgba(21, 25, 29, .28); background: transparent; padding: 3px 8px; color: var(--ink); font: 13px "DM Mono", monospace; cursor: pointer; }
-.preference-tag:hover { border-color: var(--ink); background: rgba(21, 25, 29, .06); }
-.preference-mark { display: inline-flex; align-items: center; justify-content: center; width: 13px; height: 13px; border: 1px solid currentColor; color: var(--muted); font-size: 9px; line-height: 1; }
-.preference-tag.is-wanted { border-color: #11532c; background: #1f7a45; color: #fff; font-weight: 700; }
-.preference-tag.is-wanted .preference-mark { border-color: #fff; color: #fff; }
-.preference-tag.is-excluded { border-color: #ad2819; background: #fbe3e0; color: #8c1f13; text-decoration: line-through; text-decoration-thickness: 1px; opacity: .75; }
-.preference-tag.is-excluded .preference-mark { border-color: currentColor; color: #8c1f13; }
-.preference-tag-list { display: flex; flex-wrap: wrap; gap: 5px; }
-/* Three side-by-side boards keep every tag reachable without scrolling. */
-.preference-tags { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px 16px; padding: 12px 14px 0; }
-.preference-board > p { margin: 0 0 6px; padding-bottom: 4px; border-bottom: 1px solid rgba(21, 25, 29, .18); }
+/* Chips, not boxes: a border around every tag made each one read as a control
+   and tripled the visual weight of the panel. */
+.preference-tag { display: inline-flex; align-items: center; border: 0; border-radius: 2px; background: rgba(21, 25, 29, .07); padding: 0 4px; color: var(--ink); font: 500 9px/1.7 "Noto Sans SC", sans-serif; cursor: pointer; }
+.preference-tag:hover { background: rgba(21, 25, 29, .18); }
+.preference-tag.is-wanted { background: #1f7a45; color: #fff; font-weight: 700; }
+.preference-tag.is-excluded { background: #fbe3e0; color: #8c1f13; text-decoration: line-through; text-decoration-thickness: 1px; }
+/* Fixed widths: content-based sizing let a short group collapse into a single
+   column of stacked chips. "最近玩" gets the larger share because it usually
+   holds the most tags. */
+.preference-tags { display: grid; grid-template-columns: 180px minmax(0, 1fr) minmax(0, 1fr); gap: 0 16px; padding: 8px 12px 4px; align-items: start; }
+.preference-board { min-width: 0; }
+.preference-board + .preference-board { border-left: 1px solid var(--dot); padding-left: 16px; margin-left: -16px; }
+.preference-board > p { margin: 0 0 4px; color: var(--muted); font: 700 9px "Space Grotesk", sans-serif; letter-spacing: .08em; }
+.preference-tag-list { display: flex; flex-wrap: wrap; gap: 2px; }
+.preference-empty { color: var(--muted); font: 9px "Noto Sans SC", sans-serif; opacity: .7; }
 @media (max-width: 720px) {
-  .preference-tags { grid-template-columns: 1fr; }
+  .preference-tags { grid-template-columns: 1fr; gap: 8px; }
+  .preference-board + .preference-board { border-left: 0; padding-left: 0; margin-left: 0; }
 }
 
 .evidence-note { justify-self: start; width: fit-content; border: 1px solid #a97516; background: #fdf3dd; padding: 0 5px; color: #7a5410; font: 10px "DM Mono", monospace; cursor: help; }
@@ -194,3 +220,37 @@ body[data-mode="seed"] .seed-requirements { border-left-color: #2f9e44; }
 .gap-tag { display: grid; gap: 1px; border-left: 2px solid var(--ink); padding-left: 7px; }
 .gap-tag strong { width: fit-content; background: var(--ink); padding: 0 5px; color: var(--paper); font-size: 15px; line-height: 1.25; }
 .gap-tag small { color: var(--muted); font: 12px "DM Mono", monospace; }
+body[data-mode="gacha"] { --acid: #ffd166; --coral: #b5179e; }
+body[data-mode="gacha"] .mode-tab.is-active { background: #b5179e; color: #fff; }
+.tier-plain { border-color: var(--ink); background: var(--paper); color: var(--ink); }
+
+/* A saved gacha pull keeps its grade as a compact rail, not a second full card. */
+.wishlist-item.wishlist-tier-r { border-left: 5px solid #317fb4; padding-left: 7px; }
+.wishlist-item.wishlist-tier-sr { border-left: 5px solid #6b27bc; padding-left: 7px; background: rgba(152, 92, 229, .11); }
+.wishlist-item.wishlist-tier-ssr { border-left: 5px solid #c99320; padding-left: 7px; background: rgba(255, 224, 138, .22); }
+.wishlist-item.wishlist-tier-ur { position: relative; border-left: 5px solid #ff6b8b; padding-left: 7px; background: linear-gradient(90deg, rgba(255, 107, 139, .15), rgba(98, 201, 255, .12), transparent 70%); }
+.wishlist-item.wishlist-tier-ur::before { content: ""; position: absolute; top: 0; bottom: 0; left: -5px; width: 5px; background: linear-gradient(#ff6b8b, #ffee5c, #62c9ff, #b47bff); }
+
+/* Evidence tags carry their source-game rank, so secondary signals are explicit. */
+.evidence-tags em { display: inline-flex; align-items: baseline; gap: 4px; }
+.evidence-tags em small { font: 700 10px "DM Mono", monospace; }
+.evidence-tags em.is-primary { border-color: #347a3f; background: rgba(127, 214, 129, .25); }
+.evidence-tags em.is-primary small { color: #1d652c; }
+.evidence-tags em.is-secondary { border-color: #a97516; background: rgba(255, 211, 125, .28); }
+.evidence-tags em.is-secondary small { color: #855400; }
+
+/* Gacha only: the grade colours the whole card, so a pull reads before the
+   number does. Padding comes from the border so the grid does not shift. */
+.card-r, .card-sr, .card-ssr, .card-ur { border-radius: 4px; padding: 12px; }
+.card-r { background: linear-gradient(150deg, #e5f5ff 0%, #cae9ff 55%, #a7d8fa 100%); box-shadow: inset 0 0 0 2px #317fb4, 0 2px 10px rgba(49, 127, 180, .22); }
+.card-sr { color: #261042; background: linear-gradient(145deg, #ecddff 0%, #c99bff 45%, #985ce5 100%); box-shadow: inset 0 0 0 3px #5f20af, 0 4px 18px rgba(95, 32, 175, .45); }
+.card-ssr { background: linear-gradient(150deg, #fff9e6 0%, #ffeeb8 40%, #ffe08a 100%); box-shadow: inset 0 0 0 2px #c99320, 0 3px 14px rgba(201, 147, 32, .3); }
+.card-ur { position: relative; color: #17121f; background: linear-gradient(115deg, #ff6b8b, #ffb347, #ffee5c, #6bffb8, #62c9ff, #b47bff, #ff6b8b); background-size: 320% 100%; animation: tier-ur-shift 5s linear infinite; box-shadow: 0 0 0 2px rgba(255, 255, 255, .7), 0 4px 20px rgba(120, 60, 200, .55); }
+.card-ur::after { content: ""; position: absolute; inset: 0; border-radius: 4px; pointer-events: none; background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, .75) 50%, transparent 65%); background-size: 260% 100%; animation: card-ur-sheen 2.6s ease-in-out infinite; }
+@keyframes card-ur-sheen { from { background-position: 160% 0; } to { background-position: -60% 0; } }
+/* One card per row when it is graded, or a coloured panel next to a plain one
+   reads as a layout bug rather than a rarity. */
+.game:nth-child(odd).card-ssr, .game:nth-child(odd).card-ur { border-right: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .card-ur, .card-ur::after { animation: none; }
+}

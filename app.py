@@ -1,3 +1,4 @@
+import bisect
 import html
 import json
 import math
@@ -22,7 +23,17 @@ app = Flask(__name__)
 
 STEAM_API_BASE = "https://api.steampowered.com"
 STEAM_STORE_BASE = "https://store.steampowered.com"
-STORE_HEADERS = {"User-Agent": "Gift Scout/1.0 (+local Steam gift recommender)"}
+STORE_HEADERS = {"User-Agent": "Gifi/1.0 (+local Steam gift recommender)"}
+# A store page lists twenty tags; anything shorter means the fetch was cut off.
+FULL_TAG_LABEL_COUNT = 15
+# Without these the age gate serves a stub page carrying no tag markup at all,
+# which is why violent titles used to arrive with seven tags instead of twenty.
+STORE_COOKIES = {
+    "birthtime": "631152001",
+    "lastagecheckage": "1-January-1990",
+    "mature_content": "1",
+    "wants_mature_content": "1",
+}
 STORE_CACHE_SECONDS = 1800
 CATALOG_SNAPSHOT_PATH = Path(app.root_path) / "data" / "store_catalog_cn.json"
 CATALOG_CANDIDATES_PATH = Path(app.root_path) / "data" / "store_catalog_candidates_cn.json"
@@ -36,6 +47,11 @@ FEEDBACK_MAX_IMAGE_BYTES = 4 * 1024 * 1024
 feedback_lock = Lock()
 APP_NAME_CACHE_PATH = Path(app.root_path) / "data" / "steam_app_name_cn.json"
 CATALOG_TAG_LABEL_CACHE_PATH = Path(app.root_path) / "data" / "steam_catalog_tag_labels_cn.json"
+TEXT_TAG_CATALOG_PATH = Path(app.root_path) / "data" / "steam_text_tag_catalog.json"
+APP_TEXT_TAG_CACHE_PATH = Path(app.root_path) / "data" / "steam_app_text_tags.json"
+AUTO_TEXT_POLICY_PATH = Path(app.root_path) / "golden_labels" / "auto_text_policy.json"
+CUSTOM_TAG_PATH = Path(app.root_path) / "golden_labels" / "custom_tags.json"
+TEXT_POLICY_DISPLAY_OVERRIDES = {9000011: "军事", 9000012: "战略指挥"}
 store_catalog_cache = {"modified_at": None, "games": [], "tag_name_ids": {}}
 live_top_seller_cache = {"updated_at": 0, "app_ids": set()}
 SEARCH_PAGE_SIZE = 50
@@ -82,6 +98,7 @@ LEVEL_3_UNCONFIRMED_FLOOR = 0.4
 # owning a shelf of them cannot outrank a game actually played.
 PASSIVE_PLAYTIME_RANK_LIMIT = 5
 PASSIVE_PLAYTIME_FACTOR = 0.2
+SEMI_PASSIVE_PLAYTIME_FACTOR = 0.6
 # Cited games should be ones the gift giver actually remembers, so evidence is
 # drawn super-linearly towards the more deeply played sources of a tag.
 EVIDENCE_ENGAGEMENT_EXPONENT = 2
@@ -122,11 +139,125 @@ TAG_OVERLAP_MAX_PARTNER_SHARE = 0.2
 # that has not appeared within its window is forced into the next batch.
 SR_PITY_CARDS = 12
 SSR_PITY_CARDS = 36
+UR_PITY_CARDS = 90
+# Gacha scores are stretched into this band rather than onto a bare 0-100, so the
+# grade thresholds land on round numbers instead of 80/69/62/54.
+GACHA_SCORE_FLOOR = 46
+# A pull reading exactly the same number every time feels mechanical, so each
+# card wobbles by a point or two without crossing into another grade.
+GACHA_SCORE_JITTER = 2
 # Front-loading the best cards leaves nothing to discover, so at most one high
 # grade per page and the very top grade only after the opening pages.
 MAX_HIGH_TIER_PER_BATCH = 1
+# A wide draw is what makes a rare pull rare; a dozen candidates were all top tier.
+GACHA_POOL_DEPTH = 70
+GACHA_POOL_NEW = 20
 SSR_EARLIEST_CARD = 8
 UR_EARLIEST_CARD = 20
+# Outside gacha mode the batch leads with its strongest matches; the tolerance
+# keeps a little variety among candidates that score essentially the same.
+SCORE_FIRST_TOLERANCE = 4
+# Recognition nudges the running order without touching the match score shown on
+# the card. Reviews decide how strongly it applies, the rating decides the sign:
+# a game everybody owns and dislikes is pushed down harder than an unknown one.
+APPEAL_REVIEW_REFERENCE = 20000
+# A game that has been on sale for years and still has a few hundred reviews did
+# not find its players. Judged only once a game has had time to be found, so a
+# release from last week is never punished for being new.
+APPEAL_GRACE_DAYS = 60
+APPEAL_MATURITY_DAYS = 540
+APPEAL_EXPECTED_REVIEWS = 2000
+APPEAL_OBSCURITY_POINTS = 16
+# A game with no reviews yet is unproven, not rejected.
+UNRATED_APPEAL_SHARE = 0.5
+# Tastes with a small but real audience. Their games never gather store-wide
+# review counts, so their recognition is multiplied rather than re-based.
+NICHE_CIRCLE_TAG_IDS = frozenset({31579, 9551})
+NICHE_CIRCLE_MULTIPLIER = 2.6
+NICHE_CIRCLE_RANK_LIMIT = 6
+# What players call these genres, where Steam's own label reads oddly in Chinese.
+TAG_DISPLAY_OVERRIDES = {31579: "乙女"}
+# Hand-cleared games: a tag the community attached that misrepresents the game.
+# Keyed by app id, listing the tag ids to ignore everywhere.
+TAG_EXEMPTIONS = {
+    2592160: {12095, 6650},           # Dispatch 超英派遣中心
+    3240220: {12095, 6650},           # Grand Theft Auto V 增强版
+    2113850: {12095, 6650, 9130},     # Spirit City: Lofi Sessions
+    2358720: {29482},                  # 黑神话：悟空 is not a Souls-like recommendation signal
+}
+EVIDENCE_EXCLUDED_APP_IDS = {431960}  # Wallpaper Engine must never define a taste
+CANDIDATE_EXCLUDED_APP_IDS = {431960}  # Wallpaper Engine is not a gift candidate
+GATE_EXEMPT_APP_IDS = {2592160, 3240220}  # Dispatch and GTA V are normal-game exceptions
+RECENT_REPRESENTATIVE_GAME_COUNT = 15
+# Steam exposes a short, unrelated data-ds-tagids list alongside the full tag
+# names on this page. Keep the manually verified pairs together rather than
+# zipping the two lists and calling “cute” a hack-and-slash game.
+APP_TAG_OVERRIDES = {
+    1386750: (
+        [3964, 4106, 4726, 1664, 3834, 21, 19, 492, 1684, 3871, 5716, 4004, 3916, 4305, 5608, 5350, 4182, 4791, 15564, 6971],
+        ["像素图形", "动作冒险", "可爱", "解谜", "探索", "冒险", "动作", "独立", "奇幻", "2D", "悬疑", "复古", "老式", "彩色", "情感", "阖家", "单人", "俯视", "钓鱼", "多结局"],
+    ),
+}
+# Recognition grows by order of magnitude, not linearly: a few hundred reviews is
+# noise, tens of thousands is a known game, and a million is a household name.
+# Each entry is (review count, share of the full recognition bonus).
+APPEAL_REVIEW_LADDER = [
+    (0, 0.0),
+    (100, 0.02),
+    (1000, 0.08),
+    (5000, 0.22),
+    (20000, 0.45),
+    (100000, 0.72),
+    (400000, 0.90),
+    (1000000, 1.0),
+]
+# Reviews per day, so a fortnight-old game with a thousand reviews reads as the
+# hit it is. Steps follow what the catalogue actually reaches: half the games sit
+# near 3 a day, the top percent above 600.
+APPEAL_REVIEW_RATE_LADDER = [
+    (0, 0.0),
+    (1, 0.02),
+    (5, 0.10),
+    (20, 0.25),
+    (80, 0.45),
+    (250, 0.68),
+    (800, 0.88),
+    (2500, 1.0),
+]
+# Reviews carry the signal; the rating only tilts it. A mixed-but-huge game is
+# still a game people bought, so the floor sits low enough not to erase it.
+APPEAL_QUALITY_FLOOR = 38
+APPEAL_QUALITY_TARGET = 82
+# A rating can never cancel more than part of the recognition it earned.
+APPEAL_QUALITY_MIN = -0.35
+# New releases are judged against each other, since a month-old game with a few
+# thousand reviews is a hit, and their ratings are still settling.
+NEW_RELEASE_QUALITY_FLOOR = 55
+NEW_RELEASE_QUALITY_TARGET = 85
+APPEAL_WEIGHT_BALANCED = 0.8
+# Pure taste: the mode that ignores how many people have heard of a game.
+APPEAL_WEIGHT_MATCH_FIRST = 0.0
+APPEAL_WEIGHT_TOP_SELLERS = 1.6
+APPEAL_WEIGHT_NEW_RELEASES = 0.85
+# Hidden gems invert the usual reading of a review count: enough players to prove
+# the game works, few enough that it never reached the front page. Peaks in the
+# hundreds to low thousands, which is the 25th to 75th percentile of the store.
+APPEAL_WEIGHT_HIDDEN_GEMS = 1.1
+HIDDEN_GEM_REVIEW_LADDER = [
+    (0, 0.0),
+    (30, 0.35),
+    (120, 0.75),
+    (600, 1.0),
+    (4000, 1.0),
+    (20000, 0.55),
+    (90000, 0.2),
+    (400000, 0.0),
+]
+# Being overlooked only counts if the few who played it liked it.
+HIDDEN_GEM_QUALITY_FLOOR = 70
+HIDDEN_GEM_QUALITY_TARGET = 92
+# Points a fully recognised, well-loved game gains, or a widely disliked one loses.
+APPEAL_POINTS = 52
 # One narrow taste in the library should not turn a whole batch into the same
 # genre, which is how a single dating sim produced four visual novel cards.
 MAX_SAME_CORE_TAG_PER_BATCH = 2
@@ -138,7 +269,7 @@ EVIDENCE_SAME_CARD_BONUS = 25
 # The raw score has no natural ceiling and its absolute size depends on how many
 # tags a profile happens to carry, so a fixed divisor made every result look the
 # same. The 0-100 scale is instead anchored to this user's own score spread.
-MATCH_PERCENT_BASELINE_PERCENTILE = 30
+MATCH_PERCENT_BASELINE_PERCENTILE = 70
 # Seed mode scores only the gift giver's own library, so a percentile tuned for the
 # 3000-game catalogue would leave almost nothing above the baseline and report 0
 # for most cards. Keep a minimum number of candidates above it.
@@ -152,6 +283,9 @@ MATCH_PERCENT_MIN_ABOVE_BASELINE = 24
 # another at 7, so both squeeze into a narrow slice. The scale is anchored to
 # this profile's own distribution instead.
 MATCH_PERCENT_BASELINE_ANCHOR = 40
+# Keep the ordinary gift/seed scale anchored at 40. Tags now cover more real
+# signals, so a separate presentation bonus would double-count that lift.
+MATCH_PERCENT_DISPLAY_OFFSET = 0
 # The best match found is not a perfect match, so the top of the scale sits just
 # above anything the catalogue actually offers and 100 stays out of reach.
 MATCH_CEILING_HEADROOM = 1.12
@@ -166,24 +300,53 @@ MATCH_CEILING_PERCENTILE = 99.5
 MATCH_DEPTH_FLOOR = 2.6
 # The scale is built on the two deep layers. Broad-taste-only matches would all
 # read a flat zero, so they get a small band of their own below the main scale.
-DEPTH_GROUP_WEIGHT = {"level_3": 2.0, "level_2_core": 1.0}
+# Every tag carries a 0-10 weight; the layer it sits in only supplies the default,
+# so a tag can be worth more than its neighbours without being reclassified.
+LAYER_DEFAULT_TAG_WEIGHT = {"level_3": 10, "level_2_core": 6, "soft_preference": 2, "level_1": 1}
+# Anchors converting that weight into match depth, interpolated in between.
+# The scale runs well past 10 so a tag like otome, which nails a taste nothing
+# else can, still has somewhere to go.
+TAG_WEIGHT_DEPTH_ANCHORS = [(0, 0.0), (1, 0.15), (2, 0.3), (6, 1.0), (10, 2.6), (14, 5.4), (18, 9.0)]
+# At or above this a tag counts as gameplay evidence and joins the precision-first
+# sum; below it a tag only adds breadth.
+DEEP_PATH_MIN_WEIGHT = 4
+# What the interface and the confidence wording call a directed tag.
+DIRECTED_TAG_MIN_WEIGHT = 8
+# Capped below one core tag, or eight vague tags would quietly outrank a genre match.
+SHALLOW_DEPTH_CAP = 0.9
+# A month is short for someone who plays a few evenings a month, and an empty
+# "recently played" board reads as a broken feature rather than a quiet one.
+RECENTLY_PLAYED_DAYS = 90
+# A tag the gift giver picked by hand outranks one merely inferred from the library.
+SELECTED_TAG_DEPTH_BOOST = 1.8
+# Choosing a tag makes it directed for that search, whatever it is worth normally.
+SELECTED_TAG_MIN_WEIGHT = 9
 # Above 1 the strongest matches dominate, so hitting two tags squarely beats
 # brushing five. At 1 this reduces to the old plain sum.
 MATCH_DEPTH_CONCENTRATION = 2.0
-SHALLOW_GROUP_WEIGHT = {"soft_preference": 1 / 3, "level_1": 1 / 6}
-SHALLOW_MAX_PERCENT = 22
-SHALLOW_FULL_CREDIT = 1.2
 # Candidate depths bunch together, so differences are amplified around the level
 # a typical shown card reaches.
-MATCH_PERCENT_PIVOT = 0.4
-MATCH_PERCENT_SPREAD = 1.5
-# Rarity is read straight off the number on the card, so a high score can never
-# be labelled common. Each entry is (minimum percent, name, explanation).
+MATCH_PERCENT_PIVOT = 0.6
+MATCH_PERCENT_SPREAD = 1.8
+# Grades are shown in gacha mode only, so the thresholds follow what that mode
+# actually deals: its paced draw rarely reaches the scores the plain modes open
+# with. Retune these whenever the percent scale moves.
+# Each entry is (minimum percent, name, explanation).
 MATCH_RARITY_TIERS = [
-    (95, "UR", "\u5b9d\u85cf\u7ea7\uff1a\u591a\u4e2a\u62db\u724c\u73a9\u6cd5\u6df1\u5ea6\u91cd\u5408"),
-    (88, "SSR", "\u6781\u54c1\uff1a\u62db\u724c\u73a9\u6cd5\u52a0\u591a\u5904\u6838\u5fc3\u91cd\u5408"),
-    (78, "SR", "\u7a00\u6709\uff1a\u591a\u4e2a\u6838\u5fc3\u73a9\u6cd5\u91cd\u5408"),
-    (65, "R", "\u826f\u54c1\uff1a\u6709\u5c11\u91cf\u6838\u5fc3\u91cd\u5408"),
+    (74, "UR", "\u5b9d\u85cf\u7ea7\uff1a\u591a\u4e2a\u62db\u724c\u73a9\u6cd5\u6df1\u5ea6\u91cd\u5408"),
+    (66, "SSR", "\u6781\u54c1\uff1a\u62db\u724c\u73a9\u6cd5\u52a0\u591a\u5904\u6838\u5fc3\u91cd\u5408"),
+    (60, "SR", "\u7a00\u6709\uff1a\u591a\u4e2a\u6838\u5fc3\u73a9\u6cd5\u91cd\u5408"),
+    (52, "R", "\u826f\u54c1\uff1a\u6709\u5c11\u91cf\u6838\u5fc3\u91cd\u5408"),
+    (0, "N", "\u666e\u901a\uff1a\u4e3b\u8981\u662f\u5bbd\u6cdb\u7c7b\u578b\u91cd\u5408"),
+]
+# Gacha stretches the plain score across the full 0-100, so these thresholds are
+# set by how often each grade should be dealt rather than by a point total:
+# roughly 2% UR, 10% SSR, 20% SR, 40% R, the rest N.
+GACHA_RARITY_TIERS = [
+    (90, "UR", "\u5b9d\u85cf\u7ea7\uff1a\u4eca\u5929\u6700\u63a5\u8fd1\u5b8c\u7f8e\u7684\u4e00\u5f20"),
+    (80, "SSR", "\u6781\u54c1\uff1a\u62db\u724c\u73a9\u6cd5\u52a0\u591a\u5904\u6838\u5fc3\u91cd\u5408"),
+    (70, "SR", "\u7a00\u6709\uff1a\u591a\u4e2a\u6838\u5fc3\u73a9\u6cd5\u91cd\u5408"),
+    (58, "R", "\u826f\u54c1\uff1a\u6709\u5c11\u91cf\u6838\u5fc3\u91cd\u5408"),
     (0, "N", "\u666e\u901a\uff1a\u4e3b\u8981\u662f\u5bbd\u6cdb\u7c7b\u578b\u91cd\u5408"),
 ]
 ACHIEVEMENT_CACHE_SECONDS = 3600
@@ -314,7 +477,7 @@ def store_json(path, params):
     # when Steam throttles, which reads as a hang rather than a slow lookup.
     for attempt in range(3):
         try:
-            response = requests.get(f"{STEAM_STORE_BASE}{path}", params=params, headers=STORE_HEADERS, timeout=8)
+            response = requests.get(f"{STEAM_STORE_BASE}{path}", params=params, headers=STORE_HEADERS, cookies=STORE_COOKIES, timeout=8)
             response.raise_for_status()
             payload = response.json()
             if isinstance(payload, dict):
@@ -493,11 +656,94 @@ def load_catalog_tag_label_cache():
         return {}
 
 
-def fetch_app_tag_labels(app_id):
+@lru_cache(maxsize=1)
+def load_text_tag_catalog():
+    try:
+        return json.loads(TEXT_TAG_CATALOG_PATH.read_text(encoding="utf-8")).get("games", {})
+    except (OSError, ValueError, TypeError):
+        return {}
+
+
+@lru_cache(maxsize=1)
+def load_text_policy_rule_keys():
+    try:
+        rule_keys = json.loads((Path(app.root_path) / "golden_labels" / "steam_text_policy.json").read_text(encoding="utf-8")).get("rule_keys", {})
+        auto_policy = load_auto_text_policy()
+        rule_keys.update({entry["tag"]: entry["key"] for entry in auto_policy.get("tags", [])})
+        rule_keys.update({entry["tag"]: entry["key"] for entry in auto_policy.get("excluded", [])})
+        return rule_keys
+    except (OSError, ValueError, TypeError):
+        return {}
+
+
+@lru_cache(maxsize=1)
+def load_auto_text_policy():
+    try:
+        return json.loads(AUTO_TEXT_POLICY_PATH.read_text(encoding="utf-8"))
+    except (OSError, ValueError, TypeError):
+        return {"tags": [], "excluded": []}
+
+
+@lru_cache(maxsize=1)
+def load_text_policy_aliases():
+    try:
+        return json.loads((Path(app.root_path) / "golden_labels" / "steam_text_policy.json").read_text(encoding="utf-8")).get("aliases", {})
+    except (OSError, ValueError, TypeError):
+        return {}
+
+
+@lru_cache(maxsize=1)
+def load_text_policy_display_names():
+    rule_keys = load_text_policy_rule_keys()
+    names = defaultdict(Counter)
+    for entry in load_text_tag_catalog().values():
+        for english, chinese in zip(entry.get("en", []), entry.get("zh", [])):
+            if english in rule_keys:
+                names[rule_keys[english]][chinese] += 1
+    display = {
+        tag_id: votes.most_common(1)[0][0]
+        for tag_id, votes in names.items()
+        if votes
+    }
+    return {**display, **TEXT_POLICY_DISPLAY_OVERRIDES}
+
+
+def text_policy_tags(app_id, english_labels, chinese_labels):
+    """Translate official full text labels into scoring keys, never Steam short ids."""
+    rule_keys = load_text_policy_rule_keys()
+    aliases = load_text_policy_aliases()
+    ignored = {"Souls-like"} if int(app_id) == 2358720 else set()
+    safety_keys = {
+        "Adult Content": 12095,
+        "Sexual Content": 12095,
+        "Nudity": 6650,
+        "Anime Nudity": 9130,
+    }
+    dropped = TAG_EXEMPTIONS.get(int(app_id), frozenset())
+    canonical_labels = [aliases.get(label, label) for label in english_labels or []]
+    tag_ids = [rule_keys[label] for label in canonical_labels if label in rule_keys and label not in ignored]
+    tag_ids.extend(
+        safety_keys[label]
+        for label in english_labels or []
+        if label in safety_keys and safety_keys[label] not in dropped
+    )
+    custom_by_app, _ = load_custom_tags()
+    return list(dict.fromkeys(custom_by_app.get(int(app_id), []) + tag_ids)), list(chinese_labels or [])
+
+
+def load_app_text_tag_cache():
+    try:
+        return json.loads(APP_TEXT_TAG_CACHE_PATH.read_text(encoding="utf-8"))
+    except (OSError, ValueError, TypeError):
+        return {}
+
+
+def fetch_app_tag_labels(app_id, language="schinese"):
     page = requests.get(
         f"{STEAM_STORE_BASE}/app/{app_id}/",
-        params={"cc": "cn", "l": "schinese"},
+        params={"cc": "cn", "l": language},
         headers=STORE_HEADERS,
+        cookies=STORE_COOKIES,
         timeout=12,
     )
     page.raise_for_status()
@@ -512,7 +758,7 @@ def get_catalog_tag_labels(app_id):
     with catalog_tag_label_cache_lock:
         cache = load_catalog_tag_label_cache()
         cached = cache.get(str(app_id))
-        if cached:
+        if cached and len(cached) >= FULL_TAG_LABEL_COUNT:
             return cached
     try:
         labels = fetch_app_tag_labels(app_id)
@@ -624,7 +870,12 @@ def backfill_catalog_tag_labels_batch(batch_size=CATALOG_BATCH_SIZE):
     except (OSError, ValueError, TypeError):
         raise RuntimeError("当前目录快照不可读取，无法回填中文标签。")
 
-    pending_games = [game for game in games if game.get("tag_ids") and not game.get("tag_labels")][:batch_size]
+    # A page served behind the age gate carries no tag markup, so a short list is
+    # a failed fetch rather than a game that really has five tags.
+    pending_games = [
+        game for game in games
+        if game.get("tag_ids") and len(game.get("tag_labels") or []) < FULL_TAG_LABEL_COUNT
+    ][:batch_size]
     if not pending_games:
         return snapshot, 0, 0
 
@@ -647,7 +898,10 @@ def backfill_catalog_tag_labels_batch(batch_size=CATALOG_BATCH_SIZE):
     snapshot.update(
         generated_at=datetime.now(timezone.utc).isoformat(),
         games=updated_games,
-        tag_label_backfill_pending=sum(bool(game.get("tag_ids")) and not bool(game.get("tag_labels")) for game in updated_games),
+        tag_label_backfill_pending=sum(
+            bool(game.get("tag_ids")) and len(game.get("tag_labels") or []) < FULL_TAG_LABEL_COUNT
+            for game in updated_games
+        ),
     )
     temporary_path = CATALOG_SNAPSHOT_PATH.with_suffix(".tmp")
     temporary_path.write_text(json.dumps(snapshot, ensure_ascii=False), encoding="utf-8")
@@ -809,6 +1063,43 @@ def get_tag_overlap_map(catalog_size):
     return overlap
 
 
+@lru_cache(maxsize=1)
+def load_custom_tags():
+    """Hand-curated tags Steam does not offer, as (tags by app, names by id)."""
+    try:
+        raw = json.loads(CUSTOM_TAG_PATH.read_text(encoding="utf-8")).get("tags", {})
+    except (OSError, ValueError, TypeError):
+        return {}, {}
+    by_app, names = {}, {}
+    for tag_id, entry in raw.items():
+        tag_id = int(tag_id)
+        names[tag_id] = entry["name"]
+        for app_id in entry.get("app_ids", []):
+            by_app.setdefault(int(app_id), []).append(tag_id)
+    return by_app, names
+
+
+def apply_custom_tags(app_id, tag_ids, tag_labels=None):
+    """Prepend the curated tags for this game, since a hand-made call outranks Steam's."""
+    override = APP_TAG_OVERRIDES.get(int(app_id))
+    if override:
+        tag_ids, tag_labels = override
+    by_app, names = load_custom_tags()
+    dropped = TAG_EXEMPTIONS.get(int(app_id), frozenset())
+    if dropped:
+        keep = [index for index, tag_id in enumerate(tag_ids or []) if tag_id not in dropped]
+        tag_labels = [tag_labels[i] for i in keep if i < len(tag_labels)] if tag_labels else tag_labels
+        tag_ids = [tag_ids[i] for i in keep]
+    extra = [tag_id for tag_id in by_app.get(int(app_id), []) if tag_id not in (tag_ids or [])]
+    if not extra:
+        return list(tag_ids or []), list(tag_labels or [])
+    labels = list(tag_labels or [])
+    return (
+        extra + list(tag_ids or []),
+        [names[tag_id] for tag_id in extra] + labels if labels else labels,
+    )
+
+
 def resolve_full_tag_ids(tag_ids, tag_labels, name_map):
     tag_ids = tag_ids or []
     resolved = []
@@ -833,12 +1124,20 @@ def get_store_catalog():
         games = snapshot.get("games", [])
         if len(games) < MIN_CATALOG_SIZE:
             return CATALOG
-        name_map = build_tag_name_id_map(games)
+        text_catalog = load_text_tag_catalog()
+        display_names = load_text_policy_display_names()
         games = [
-            {**game, "tag_ids": resolve_full_tag_ids(game.get("tag_ids"), game.get("tag_labels"), name_map)}
-            for game in games
+            {**game, "tag_ids": tag_ids, "tag_labels": tag_labels}
+            for game, (tag_ids, tag_labels) in (
+                (game, text_policy_tags(
+                    game["app_id"],
+                    text_catalog.get(str(game["app_id"]), {}).get("en", []),
+                    text_catalog.get(str(game["app_id"]), {}).get("zh", game.get("tag_labels") or []),
+                ))
+                for game in games
+            )
         ]
-        store_catalog_cache.update(modified_at=modified_at, games=games, tag_name_ids=name_map)
+        store_catalog_cache.update(modified_at=modified_at, games=games, tag_name_ids=display_names)
         return games
     except (OSError, ValueError, TypeError):
         return CATALOG
@@ -846,7 +1145,15 @@ def get_store_catalog():
 
 def load_label_policy():
     with LABEL_POLICY_PATH.open(encoding="utf-8") as policy_file:
-        return json.load(policy_file)
+        policy = json.load(policy_file)
+    auto_policy = load_auto_text_policy()
+    for entry in auto_policy.get("tags", []):
+        policy[entry["group"]][str(entry["key"])] = entry["tag"]
+        policy["tag_weights"][str(entry["key"])] = entry["weight"]
+    for entry in auto_policy.get("excluded", []):
+        policy["exclude_from_candidates"][str(entry["key"])] = entry["tag"]
+        policy["hard_ignore_tags"][str(entry["key"])] = entry["tag"]
+    return policy
 
 
 def load_tag_cache():
@@ -876,6 +1183,7 @@ def fetch_app_tags_and_name(app_id):
         f"{STEAM_STORE_BASE}/app/{app_id}/",
         params={"cc": "cn", "l": "schinese"},
         headers=STORE_HEADERS,
+        cookies=STORE_COOKIES,
         timeout=10,
     )
     page.raise_for_status()
@@ -976,11 +1284,19 @@ def get_review_summary(app_id):
 
 
 def select_engagement_candidates(games):
-    eligible_games = [game for game in games if game.get("playtime_forever", 0) >= MIN_PREFERENCE_PLAYTIME_MINUTES]
+    eligible_games = [
+        game for game in games
+        if int(game.get("appid", 0)) not in EVIDENCE_EXCLUDED_APP_IDS
+        and game.get("playtime_forever", 0) >= MIN_PREFERENCE_PLAYTIME_MINUTES
+    ]
     if not eligible_games:
         # A lightly played library still describes a taste; falling through to the
         # keyword-only path would throw that away entirely.
-        eligible_games = [game for game in games if game.get("playtime_forever", 0) > 0]
+        eligible_games = [
+            game for game in games
+            if int(game.get("appid", 0)) not in EVIDENCE_EXCLUDED_APP_IDS
+            and game.get("playtime_forever", 0) > 0
+        ]
     by_time = sorted(eligible_games, key=lambda game: game.get("playtime_forever", 0), reverse=True)[:80]
     mid_length = sorted(
         [game for game in eligible_games if 600 <= game.get("playtime_forever", 0) <= 7200],
@@ -1022,6 +1338,13 @@ def select_representative_games(games):
             reverse=True,
         )[:PREFERENCE_GAME_LIMIT - len(selected)]
         selected.extend(remaining)
+    recent = sorted(
+        (game for game in games if game.get("rtime_last_played", 0)),
+        key=lambda game: game["rtime_last_played"],
+        reverse=True,
+    )[:RECENT_REPRESENTATIVE_GAME_COUNT]
+    selected_ids = {game["appid"] for game in selected}
+    selected.extend(game for game in recent if game["appid"] not in selected_ids)
     return selected
 
 
@@ -1044,6 +1367,8 @@ def enrich_preference_games_with_tags(games):
     preference_games = games[:PREFERENCE_GAME_LIMIT]
     cache = load_tag_cache()
     names = load_name_cache()
+    text_catalog = load_text_tag_catalog()
+    app_text_cache = load_app_text_tag_cache()
     catalog_names = get_catalog_localized_names()
     for game in preference_games:
         game["display_name"] = catalog_names.get(int(game["appid"]), "")
@@ -1070,8 +1395,28 @@ def enrich_preference_games_with_tags(games):
         APP_TAG_CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
         APP_TAG_CACHE_PATH.write_text(json.dumps(cache, ensure_ascii=False), encoding="utf-8")
         APP_NAME_CACHE_PATH.write_text(json.dumps(names, ensure_ascii=False), encoding="utf-8")
+    missing_text_ids = [
+        game["appid"] for game in preference_games
+        if str(game["appid"]) not in text_catalog and str(game["appid"]) not in app_text_cache
+    ]
+    if missing_text_ids:
+        def fetch_text_pair(app_id):
+            try:
+                return str(app_id), {"zh": fetch_app_tag_labels(app_id, "schinese"), "en": fetch_app_tag_labels(app_id, "english")}
+            except requests.RequestException:
+                return str(app_id), None
+        with ThreadPoolExecutor(max_workers=6) as executor:
+            futures = {executor.submit(fetch_text_pair, app_id): app_id for app_id in missing_text_ids}
+            for future in as_completed(futures):
+                app_id, text_entry = future.result()
+                if text_entry and text_entry["zh"] and text_entry["en"]:
+                    app_text_cache[app_id] = text_entry
+        APP_TEXT_TAG_CACHE_PATH.write_text(json.dumps(app_text_cache, ensure_ascii=False), encoding="utf-8")
     for game in preference_games:
-        game["tag_ids"] = cache.get(str(game["appid"]), [])
+        text_entry = text_catalog.get(str(game["appid"]), app_text_cache.get(str(game["appid"]), {}))
+        game["tag_ids"], game["tag_labels"] = text_policy_tags(
+            game["appid"], text_entry.get("en", []), text_entry.get("zh", [])
+        )
         game["display_name"] = game["display_name"] or names.get(str(game["appid"])) or game.get("name", "")
     return preference_games
 
@@ -1081,6 +1426,7 @@ def build_label_profile(games, policy, steam_id=None, api_key=None):
     now = datetime.now(timezone.utc).timestamp()
     engagement_config = policy["scoring"]["engagement"]
     chinese_tag_names = get_catalog_tag_name_map()
+    text_policy_names = load_text_policy_display_names()
     if steam_id and api_key:
         with ThreadPoolExecutor(max_workers=4) as executor:
             futures = {
@@ -1092,20 +1438,25 @@ def build_label_profile(games, policy, steam_id=None, api_key=None):
                 game["achievement_summary"] = future.result()
     tag_cache = load_tag_cache()
     passive_tags = {int(tag_id) for tag_id in policy.get("passive_playtime_tags", {})}
+    # Farming and similar games are played, but long stretches are spent letting
+    # crops grow, so hours overstate engagement less severely than idle apps do.
+    semi_passive_tags = {int(tag_id) for tag_id in policy.get("semi_passive_playtime_tags", {})}
     for game in candidate_games:
         cached_tags = game.get("tag_ids") or tag_cache.get(str(game["appid"]), [])
-        game["playtime_factor"] = (
-            PASSIVE_PLAYTIME_FACTOR
-            if passive_tags & set(cached_tags[:PASSIVE_PLAYTIME_RANK_LIMIT])
-            else 1.0
-        )
+        headline = set(cached_tags[:PASSIVE_PLAYTIME_RANK_LIMIT])
+        if passive_tags & headline:
+            game["playtime_factor"] = PASSIVE_PLAYTIME_FACTOR
+        elif semi_passive_tags & headline:
+            game["playtime_factor"] = SEMI_PASSIVE_PLAYTIME_FACTOR
+        else:
+            game["playtime_factor"] = 1.0
         game["engagement_score"] = calculate_engagement(game, game.get("achievement_summary"), now, engagement_config)
     preference_games = select_representative_games(candidate_games)
     save_achievement_cache()
     preference_games = enrich_preference_games_with_tags(preference_games)
     policy_groups = {
         group: {
-            int(tag_id): chinese_tag_names.get(int(tag_id), english_name)
+            int(tag_id): text_policy_names.get(int(tag_id), chinese_tag_names.get(int(tag_id), english_name))
             for tag_id, english_name in policy[group].items()
         }
         for group in ("level_1", "level_2_core", "level_3", "soft_preference")
@@ -1129,12 +1480,13 @@ def build_label_profile(games, policy, steam_id=None, api_key=None):
             "app_id": game["appid"],
             "name": game.get("display_name") or game["name"],
             "hours": round(game.get("playtime_forever", 0) / 60, 1),
-            "recently_played": bool(game.get("rtime_last_played", 0) and now - game["rtime_last_played"] <= 30 * 86400),
+            "recently_played": bool(game.get("rtime_last_played", 0) and now - game["rtime_last_played"] <= RECENTLY_PLAYED_DAYS * 86400),
             "achievement_percent": completion_percent,
             "achievement_completed": achievement_summary["completed"] if achievement_summary else None,
             "achievement_total": achievement_summary["total"] if achievement_summary else None,
             "engagement_score": round(game["engagement_score"], 2),
             "passive_playtime": game.get("playtime_factor", 1.0) < 1,
+            "playtime_factor": game.get("playtime_factor", 1.0),
         }
         labels_contributed = 0
         filtered_tag_ids = filter_outlier_tags(game.get("tag_ids", []), policy)
@@ -1164,7 +1516,11 @@ def build_label_profile(games, policy, steam_id=None, api_key=None):
 
 
 def build_preference_profile(games):
-    ranked_games = sorted(games, key=lambda game: game.get("playtime_forever", 0), reverse=True)
+    ranked_games = sorted(
+        (game for game in games if int(game.get("appid", 0)) not in EVIDENCE_EXCLUDED_APP_IDS),
+        key=lambda game: game.get("playtime_forever", 0),
+        reverse=True,
+    )
     played_games = [game for game in ranked_games if game.get("playtime_forever", 0) >= MIN_PREFERENCE_PLAYTIME_MINUTES]
     preference_games = played_games[:PREFERENCE_GAME_LIMIT]
     catalog_names = get_catalog_localized_names()
@@ -1314,11 +1670,15 @@ def collapse_match_families(label_matches, candidate_tag_ids, policy):
     return label_matches
 
 
+def tag_display_name(tag_id, name):
+    """Steam's wording is not always the one players use for the genre."""
+    return TAG_DISPLAY_OVERRIDES.get(int(tag_id), name) if name else name
+
+
 def get_catalog_tag_name_map():
-    tag_names = {}
-    for game in get_store_catalog():
-        for tag_id, tag_name in zip(game.get("tag_ids", []), game.get("tag_labels", [])):
-            tag_names.setdefault(tag_id, tag_name)
+    tag_names = dict(load_text_policy_display_names())
+    _, custom_names = load_custom_tags()
+    tag_names.update(custom_names)
     return tag_names
 
 
@@ -1337,9 +1697,9 @@ def serialize_preference_tags(label_profile, policy_groups):
             tags.append(
                 {
                     "tag_id": tag_id,
-                    "name": policy_groups[group].get(tag_id) or find_tag_name(policy_groups, tag_id),
+                    "name": tag_display_name(tag_id, policy_groups[group].get(tag_id)) or find_tag_name(policy_groups, tag_id),
                     "group": group,
-                    "ui_group": "和谁玩" if tag_id in ui_groups["和谁玩"] else ("最近玩" if any(item.get("recently_played") for item in label_profile[group][tag_id]) else "爱玩的"),
+                    "ui_group": "和谁玩" if tag_id in ui_groups["和谁玩"] else ("最近玩" if any(item.get("recently_played") for item in label_profile[group][tag_id]) else "喜欢玩"),
                     "source_count": len(label_profile[group][tag_id]),
                 }
             )
@@ -1388,15 +1748,66 @@ def spread_batch_evidence(selection, label_profile, evidence_use_counts):
         chosen["evidence_app_ids"] = sorted(card_app_ids | set(chosen.get("evidence_app_ids") or []))
 
 
-def combine_match_depth(qualities):
+def tag_weight_of(tag_id, policy):
+    """Weight of a tag regardless of which layer it sits in."""
+    overrides = policy.get("tag_weights") or {}
+    override = overrides.get(str(tag_id), overrides.get(tag_id))
+    if override is not None:
+        return float(override)
+    for group, default in LAYER_DEFAULT_TAG_WEIGHT.items():
+        if str(tag_id) in policy[group] or tag_id in policy[group]:
+            return float(default)
+    return 0.0
+
+
+def tag_weight(group, tag_id, policy):
+    """How much this one tag is worth, on a 0-10 scale."""
+    overrides = policy.get("tag_weights") or {}
+    override = overrides.get(str(tag_id), overrides.get(tag_id))
+    if override is not None:
+        return float(override)
+    return float(LAYER_DEFAULT_TAG_WEIGHT.get(group, 0))
+
+
+def tag_depth_weight(weight):
+    """Convert a 0-10 tag weight into the depth it contributes."""
+    points = TAG_WEIGHT_DEPTH_ANCHORS
+    if weight <= points[0][0]:
+        return points[0][1]
+    if weight >= points[-1][0]:
+        return points[-1][1]
+    for (low_w, low_d), (high_w, high_d) in zip(points, points[1:]):
+        if weight <= high_w:
+            return low_d + (high_d - low_d) * (weight - low_w) / (high_w - low_w)
+    return points[-1][1]
+
+
+def split_match_depths(label_matches, policy, rank_of, tag_strength):
+    """Depth each matched tag adds, split into the precision sum and plain breadth."""
+    deep, shallow = [], []
+    for group in ("level_3", "level_2_core", "soft_preference", "level_1"):
+        for tag_id in label_matches[group]:
+            weight = tag_weight(group, tag_id, policy)
+            contribution = (
+                tag_depth_weight(weight)
+                * tag_rank_factor(rank_of(tag_id))
+                * tag_strength.get((group, tag_id), 1.0)
+            )
+            (deep if weight >= DEEP_PATH_MIN_WEIGHT else shallow).append(contribution)
+    return deep, shallow
+
+
+def combine_match_depth(qualities, shallow=()):
     """Combine per-tag match qualities so precision outweighs breadth.
 
     A plain sum let a game that loosely touches five tags beat one that nails the
     two tags the player actually cares about. Raising each quality before adding
-    lets the strongest matches dominate while more matches still help.
+    lets the strongest matches dominate while more matches still help. Broad tags
+    bypass that step, since squaring a small number erases it.
     """
     total = sum(quality ** MATCH_DEPTH_CONCENTRATION for quality in qualities)
-    return total ** (1 / MATCH_DEPTH_CONCENTRATION) if total else 0.0
+    deep = total ** (1 / MATCH_DEPTH_CONCENTRATION) if total else 0.0
+    return deep + min(SHALLOW_DEPTH_CAP, sum(shallow))
 
 
 def uninterested_tags(tag_ids, profile_tag_ids, known_tag_ids, tag_overlap):
@@ -1447,23 +1858,20 @@ def profile_depth_reference(label_profile, tag_strength, policy, gate_filter=Non
             ranked = [tag_id for tag_id in tag_ids[:get_tag_rank_limit(group)] if tag_id in label_profile[group]]
             match_limit = get_tag_match_limit(group)
             label_matches[group] = ranked[:match_limit] if match_limit else ranked
+        before_collapse = {group: list(tags) for group, tags in label_matches.items()}
         label_matches = collapse_match_families(label_matches, tag_ids, policy)
-        label_matches, _ = promote_level_3_pairs(label_matches, policy)
+        label_matches, _ = promote_level_3_pairs(label_matches, policy, before_collapse)
         ranks = {tag_id: rank for rank, tag_id in enumerate(tag_ids, start=1)}
-        depth = combine_match_depth([
-            DEPTH_GROUP_WEIGHT[group]
-            * tag_rank_factor(ranks.get(tag_id, 1))
-            * tag_strength.get((group, tag_id), 1.0)
-            for group in DEPTH_GROUP_WEIGHT
-            for tag_id in label_matches[group]
-        ])
+        depth = combine_match_depth(*split_match_depths(
+            label_matches, policy, lambda tag_id: ranks.get(tag_id, 1), tag_strength
+        ))
         depth *= mismatch_factor(uninterested_tags(tag_ids, profile_tag_ids, known_tag_ids, tag_overlap))
         if depth > 0:
             depths.append(depth)
     return sorted(depths)
 
 
-def assign_match_percent(results, reference_depths=None):
+def assign_match_percent(results, reference_depths=None, appeal=None, appeal_headroom=0.0, as_percentile=False):
     """Map match depth onto 0-100 relative to what this profile can actually reach.
 
     Every shown card is already in the top fraction of the catalogue, so a fixed
@@ -1481,14 +1889,12 @@ def assign_match_percent(results, reference_depths=None):
     baseline = depths[index] if depths else 0
     # An absolute rank keeps a low percentage readable: a game can sit below the
     # baseline and still be, say, 210th out of 3433 rather than simply "0".
-    ordered = sorted(results, key=lambda game: -game["score"])
-    for rank, game in enumerate(ordered, start=1):
-        game["match_rank"] = rank
-        game["match_total"] = len(ordered)
     for game in results:
         depth = game.get("match_depth", 0.0)
         if depth >= baseline and ceiling > baseline:
-            position = (depth - baseline) / (ceiling - baseline)
+            # A tag strong enough to clear the whole catalogue's ceiling would
+            # otherwise raise a negative remainder to a fractional power.
+            position = min(1.0, (depth - baseline) / (ceiling - baseline))
             # Real matches crowd into a narrow band, so differences are pushed
             # away from the typical match. Clamping a straight stretch instead
             # flattened everything below the pivot onto the same number.
@@ -1503,30 +1909,68 @@ def assign_match_percent(results, reference_depths=None):
         else:
             percent = 100 if depth > 0 else 0
         if depth <= 0:
-            # Nothing deep matched, but a broad overlap is still worth more than
-            # a blank zero, so those games share a small band of their own.
-            percent = min(SHALLOW_MAX_PERCENT, SHALLOW_MAX_PERCENT * game.get("match_shallow", 0.0) / SHALLOW_FULL_CREDIT)
-        game["match_percent"] = round(min(100, max(0, percent)))
+            percent = 0
+        if appeal:
+            # The match itself is scaled into the room left below the reserved band,
+            # so adding recognition cannot push hundreds of games onto the same 100.
+            game["appeal_delta"] = round(appeal(game), 1)
+            percent = percent * (100 - appeal_headroom) / 100 + game["appeal_delta"]
+        display_offset = 0 if as_percentile else MATCH_PERCENT_DISPLAY_OFFSET
+        game["match_percent_raw"] = min(100, max(0, percent + display_offset))
+        game["match_percent"] = round(game["match_percent_raw"])
         game["match_tier"], game["match_tier_note"] = next(
             (name, note) for minimum, name, note in MATCH_RARITY_TIERS if game["match_percent"] >= minimum
         )
+    if as_percentile:
+        # Gacha is the same ranking read for fun: the plain score stretched across
+        # a wide band so the best match of the day lands near 100 and a weak one
+        # near the floor. Ties keep the same number, as two 99s should.
+        # The range comes from the draw pool, not the whole catalogue, or every
+        # card would land in the top tenth of the band and no low grades exist.
+        scores = sorted((game["match_percent_raw"] for game in results), reverse=True); high, low = (scores[0], scores[-1]) if scores else (0, 0)
+        span = high - low
+        for game in results:
+            game["plain_percent"] = game["match_percent"]
+            stretched = GACHA_SCORE_FLOOR + (100 - GACHA_SCORE_FLOOR) * (game["match_percent_raw"] - low) / span if span else 100
+            # Seeded on the game so the same card never changes number between batches.
+            wobble = (hash((int(game["app_id"]), round(stretched))) % (2 * GACHA_SCORE_JITTER + 1)) - GACHA_SCORE_JITTER
+            game["match_percent_raw"] = min(100, max(0, stretched + wobble))
+            game["match_percent"] = round(game["match_percent_raw"])
+            game["match_tier"], game["match_tier_note"] = next(
+                (name, note) for minimum, name, note in GACHA_RARITY_TIERS if game["match_percent"] >= minimum
+            )
+    # Rank by the full-precision value so close matches retain their real order.
+    ordered = sorted(results, key=lambda game: (-game.get("match_percent_raw", game["match_percent"]), -game["score"]))
+    for rank, game in enumerate(ordered, start=1):
+        game["match_rank"] = rank
+        game["match_total"] = len(ordered)
 
 
-def promote_level_3_pairs(label_matches, policy):
-    """A pair like idle plus incremental only counts as a Level 3 signal together.
+def promote_level_3_pairs(label_matches, policy, before_collapse=None):
+    """A combination like idle plus incremental only counts as a Level 3 signal together.
 
     On its own each tag stays a normal core tag, so a game that is merely idle
-    does not borrow the weight of the much narrower combined taste.
+    does not borrow the weight of the much narrower combined taste. Counting
+    happens before family collapsing, otherwise a group of near-synonyms has
+    already been reduced to one match and could never reach its threshold.
     """
+    counted = before_collapse or label_matches
     promoted = []
+    # A tag can only pay for one combination. Idle sits in both the incremental
+    # and the creature-raising pair, and without this it bought both at once.
+    spent = set()
     for pair in policy.get("level_3_pairs", []):
         tag_ids = [int(tag_id) for tag_id in pair["tags"]]
-        if not all(tag_id in label_matches["level_2_core"] for tag_id in tag_ids):
+        needed = pair.get("min", len(tag_ids))
+        present = [tag_id for tag_id in tag_ids if tag_id in counted["level_2_core"] and tag_id not in spent]
+        if len(present) < needed:
             continue
+        spent.update(present)
         for tag_id in tag_ids:
-            label_matches["level_2_core"].remove(tag_id)
-        label_matches["level_3"].append(tag_ids[0])
-        promoted.append((tag_ids[0], pair["name"]))
+            if tag_id in label_matches["level_2_core"]:
+                label_matches["level_2_core"].remove(tag_id)
+        label_matches["level_3"].append(present[0])
+        promoted.append((present[0], pair["name"]))
     return label_matches, dict(promoted)
 
 
@@ -1540,11 +1984,50 @@ def find_profile_sources(label_profile, tag_id):
 def find_tag_name(policy_groups, tag_id):
     for names in policy_groups.values():
         if isinstance(names, dict) and tag_id in names:
-            return names[tag_id]
+            return tag_display_name(tag_id, names[tag_id])
     return str(tag_id)
 
 
-def recommend(games, excluded_ids=None, evidence_use_counts=None, priority="balanced", candidates=None, steam_id=None, api_key=None, active_tag_ids=None, include_preference_tags=False, single_candidate=False, excluded_tag_ids=None):
+def obscurity_penalty(review_count, release_date, now=None):
+    """Points to remove from an old release that never gathered an audience."""
+    released_at = parse_release_date(release_date)
+    if not released_at:
+        return 0.0
+    now = now or datetime.now(timezone.utc)
+    age_days = (now - released_at).days
+    maturity = (age_days - APPEAL_GRACE_DAYS) / (APPEAL_MATURITY_DAYS - APPEAL_GRACE_DAYS)
+    maturity = max(0.0, min(1.0, maturity))
+    if not maturity:
+        return 0.0
+    shortfall = 1 - min(1.0, math.log1p(max(0, review_count or 0)) / math.log1p(APPEAL_EXPECTED_REVIEWS))
+    return APPEAL_OBSCURITY_POINTS * maturity * shortfall
+
+
+def review_rate_recognition(review_count, release_date, now=None):
+    """Recognition earned by how fast the reviews arrived rather than how many."""
+    released_at = parse_release_date(release_date)
+    if not released_at or not review_count:
+        return 0.0
+    now = now or datetime.now(timezone.utc)
+    days = max(1.0, (now - released_at).days)
+    return recognition_from_reviews(review_count / days, APPEAL_REVIEW_RATE_LADDER)
+
+
+def recognition_from_reviews(reviews, ladder=None):
+    """Share of the recognition bonus a review count earns, interpolated on a log scale."""
+    steps = ladder or APPEAL_REVIEW_LADDER
+    reviews = max(0, reviews or 0)
+    if reviews >= steps[-1][0]:
+        return steps[-1][1]
+    for (low, low_share), (high, high_share) in zip(steps, steps[1:]):
+        if reviews < high:
+            span = math.log1p(high) - math.log1p(low)
+            position = (math.log1p(reviews) - math.log1p(low)) / span if span else 0
+            return low_share + position * (high_share - low_share)
+    return steps[-1][1]
+
+
+def recommend(games, excluded_ids=None, evidence_use_counts=None, priority="balanced", candidates=None, steam_id=None, api_key=None, active_tag_ids=None, include_preference_tags=False, single_candidate=False, excluded_tag_ids=None, gacha=False, appeal_weight=APPEAL_WEIGHT_BALANCED, hidden_gems=False):
     owned_ids = {int(game["appid"]) for game in games if str(game.get("appid", "")).isdigit()}
     # Kept in display order so the batch position and what was shown recently can
     # both be recovered without the client sending extra state.
@@ -1562,6 +2045,21 @@ def recommend(games, excluded_ids=None, evidence_use_counts=None, priority="bala
         if str(tag_id).isdigit() and int(tag_id) in available_tag_ids and int(tag_id) not in requested_tag_ids:
             requested_tag_ids.append(int(tag_id))
     active_tag_ids = set(requested_tag_ids[:3])
+    if active_tag_ids:
+        # Picking a tag by hand is a stronger statement than anything inferred, so
+        # it is promoted to a directed tag for this search and then boosted again.
+        # Applied before the calibration reference is built, so both paths agree.
+        policy = {**policy, "tag_weights": {
+            **(policy.get("tag_weights") or {}),
+            **{
+                str(tag_id): max(SELECTED_TAG_MIN_WEIGHT, tag_weight_of(tag_id, policy))
+                for tag_id in active_tag_ids
+            },
+        }}
+        tag_strength = {
+            key: value * (SELECTED_TAG_DEPTH_BOOST if int(key[1]) in active_tag_ids else 1.0)
+            for key, value in tag_strength.items()
+        }
     # Tags the gift giver ruled out: any candidate carrying one is dropped.
     rejected_tag_ids = {
         int(tag_id) for tag_id in (excluded_tag_ids or [])
@@ -1583,8 +2081,12 @@ def recommend(games, excluded_ids=None, evidence_use_counts=None, priority="bala
         return required <= set(tag_ids[:within_rank] if within_rank else tag_ids)
 
     # Owning such a game says nothing about wanting one as a gift, so the gate is
-    # never unlocked by the library. A direct lookup still reports on the game.
-    unconfirmed_gates = gated_tag_rules
+    # never unlocked by the library. Asking for the tag outright is different: that
+    # is the gift giver saying it on purpose, so their own picks open the gate.
+    unconfirmed_gates = [
+        (required, within_rank) for required, within_rank in gated_tag_rules
+        if not (required & active_tag_ids)
+    ]
     has_label_profile = any(label_profile[group] for group in label_profile)
     known_preference_tag_ids = {
         tag_id for group in ("level_3", "level_2_core", "level_1", "soft_preference")
@@ -1599,7 +2101,9 @@ def recommend(games, excluded_ids=None, evidence_use_counts=None, priority="bala
         # A direct lookup should still report on a game the target already owns,
         # rather than filtering it out and looking like the query failed.
         is_focus = single_candidate and int(game["app_id"]) == int(single_candidate)
-        if not is_focus and int(game["app_id"]) in owned_ids:
+        if not is_focus and int(game["app_id"]) in CANDIDATE_EXCLUDED_APP_IDS:
+            continue
+        if not single_candidate and not is_focus and int(game["app_id"]) in owned_ids:
             continue
         # Games shown in an earlier batch still get scored, otherwise every batch
         # renormalises against a shrinking pool and the top card is always 100.
@@ -1613,7 +2117,10 @@ def recommend(games, excluded_ids=None, evidence_use_counts=None, priority="bala
             continue
         if not is_focus and candidate_tags & rejected_tag_ids:
             continue
-        gated = any(matches_gate(filtered_tag_ids, required, within_rank) for required, within_rank in unconfirmed_gates)
+        gated = int(game["app_id"]) not in GATE_EXEMPT_APP_IDS and any(
+            matches_gate(filtered_tag_ids, required, within_rank)
+            for required, within_rank in unconfirmed_gates
+        )
         # A direct lookup is an inspection tool, so it still reports tags and a
         # score for gated games and only flags why they are never recommended.
         if gated and not is_focus:
@@ -1632,8 +2139,9 @@ def recommend(games, excluded_ids=None, evidence_use_counts=None, priority="bala
             ranked_matches = [tag_id for tag_id in filtered_tag_ids[:tag_limit] if tag_id in label_profile[group]]
             match_limit = get_tag_match_limit(group)
             label_matches[group] = ranked_matches[:match_limit] if match_limit else ranked_matches
+        before_collapse = {group: list(tags) for group, tags in label_matches.items()}
         label_matches = collapse_match_families(label_matches, filtered_tag_ids, policy)
-        label_matches, promoted_pair_names = promote_level_3_pairs(label_matches, policy)
+        label_matches, promoted_pair_names = promote_level_3_pairs(label_matches, policy, before_collapse)
         candidate_tag_ranks = {tag_id: rank for rank, tag_id in enumerate(filtered_tag_ids, start=1)}
         label_sources = {group: {} for group in ("level_3", "level_1", "level_2_core", "soft_preference")}
         for group in ("level_3", "level_2_core", "level_1", "soft_preference"):
@@ -1657,6 +2165,7 @@ def recommend(games, excluded_ids=None, evidence_use_counts=None, priority="bala
                     "tag_id": tag_id,
                     "name": promoted_pair_names.get(tag_id) or policy_groups[group].get(tag_id) or find_tag_name(policy_groups, tag_id),
                     "source_game": label_sources[group][tag_id],
+                        "source_tag_rank": label_sources[group][tag_id].get("tag_rank"),
                     "candidate_tag_rank": game.get("tag_ids", []).index(tag_id) + 1,
                 }
                 for tag_id in label_matches[group]
@@ -1701,20 +2210,11 @@ def recommend(games, excluded_ids=None, evidence_use_counts=None, priority="bala
                 2 * tag_strength.get(("level_3", tag_id), 1.0)
                 for tag_id in label_matches["level_3"]
             ) + core_matches
-            match_depth = combine_match_depth([
-                DEPTH_GROUP_WEIGHT[group]
-                * tag_rank_factor(candidate_tag_ranks.get(tag_id, 1))
-                * tag_strength.get((group, tag_id), 1.0)
-                for group in DEPTH_GROUP_WEIGHT
-                for tag_id in label_matches[group]
-            ])
-            match_shallow = sum(
-                SHALLOW_GROUP_WEIGHT[group]
-                * tag_rank_factor(candidate_tag_ranks.get(tag_id, 1))
-                * tag_strength.get((group, tag_id), 1.0)
-                for group in SHALLOW_GROUP_WEIGHT
-                for tag_id in label_matches[group]
+            deep_parts, shallow_parts = split_match_depths(
+                label_matches, policy, lambda tag_id: candidate_tag_ranks.get(tag_id, 1), tag_strength
             )
+            match_depth = combine_match_depth(deep_parts, shallow_parts)
+            match_shallow = sum(shallow_parts)
             # Prominent traits of this game that TA's library shows no interest in.
             # Restricted to tags the policy recognises as gameplay signals, so a
             # descriptive label like "cosy" is not reported as a mismatch.
@@ -1775,6 +2275,58 @@ def recommend(games, excluded_ids=None, evidence_use_counts=None, priority="bala
         })
     # One yardstick for both modes: the same match must read the same number
     # whether it came from the store catalogue or from a personal library.
+    # A new release is judged against the freshest cohort, where a few thousand
+    # reviews in a month is a hit rather than an unknown.
+    new_release_peak = max(
+        (game.get("review_count") or 0 for game in results if is_recent_release(game.get("release_date"))),
+        default=0,
+    )
+
+    # A niche crowd is still a crowd. Four thousand reviews is nothing next to the
+    # store at large but is a landmark inside otome, so those games have their
+    # recognition scaled up rather than being written off as unknown.
+    def niche_multiplier(game):
+        tags = (game.get("tag_ids") or [])[:NICHE_CIRCLE_RANK_LIMIT]
+        return NICHE_CIRCLE_MULTIPLIER if NICHE_CIRCLE_TAG_IDS.intersection(tags) else 1.0
+
+    def appeal_points(game):
+        """Points the crowd's verdict adds to or removes from this game's score."""
+        if not appeal_weight:
+            return 0.0
+        if hidden_gems:
+            # Obscurity is the point here, so the usual penalty for it is dropped.
+            rate = game.get("positive_rate")
+            if rate is None:
+                return 0.0
+            quality = max(0.0, min(1.0, (rate - HIDDEN_GEM_QUALITY_FLOOR) / (HIDDEN_GEM_QUALITY_TARGET - HIDDEN_GEM_QUALITY_FLOOR)))
+            standing = recognition_from_reviews(game.get("review_count") or 0, HIDDEN_GEM_REVIEW_LADDER)
+            return APPEAL_POINTS * appeal_weight * standing * quality
+        stale = -appeal_weight * obscurity_penalty(game.get("review_count"), game.get("release_date"))
+        rate = game.get("positive_rate")
+        if rate is None:
+            # No reviews yet is not a cold reception, so an unreleased game sits
+            # mid-field instead of forfeiting the whole recognition band.
+            return APPEAL_POINTS * appeal_weight * UNRATED_APPEAL_SHARE + stale
+        fresh = is_recent_release(game.get("release_date"))
+        if fresh:
+            # Judged against the best a game a month old has managed, since even a
+            # hit cannot gather a hundred thousand reviews in three weeks.
+            peak = max(new_release_peak, 1)
+            ladder = [(round(count * peak / APPEAL_REVIEW_LADDER[-1][0]), share) for count, share in APPEAL_REVIEW_LADDER]
+            recognition = recognition_from_reviews(game.get("review_count") or 0, ladder)
+        else:
+            recognition = recognition_from_reviews(game.get("review_count") or 0)
+        floor = NEW_RELEASE_QUALITY_FLOOR if fresh else APPEAL_QUALITY_FLOOR
+        target = NEW_RELEASE_QUALITY_TARGET if fresh else APPEAL_QUALITY_TARGET
+        quality = max(APPEAL_QUALITY_MIN, min(1.0, (rate - floor) / (target - floor)))
+        # A decade of slow sales and a fortnight of frenzy are both worth noticing,
+        # so whichever reads higher stands; neither one can cost a game points.
+        recognition = max(recognition, review_rate_recognition(
+            game.get("review_count") or 0, game.get("release_date")
+        ))
+        recognition = min(1.0, recognition * niche_multiplier(game))
+        return APPEAL_POINTS * appeal_weight * recognition * quality + stale
+
     assign_match_percent(
         results,
         profile_depth_reference(
@@ -1783,12 +2335,20 @@ def recommend(games, excluded_ids=None, evidence_use_counts=None, priority="bala
             policy,
             lambda tag_ids: any(matches_gate(tag_ids, required, within) for required, within in unconfirmed_gates),
         ),
+        appeal=appeal_points,
+        appeal_headroom=APPEAL_POINTS * appeal_weight,
+        as_percentile=gacha,
     )
-    ranked = sorted((game for game in results if not game["already_shown"]), key=lambda game: -game["score"])
+    # Ordered by the number the card will show, so a mode that walks straight
+    # down the list never jumps back up when the raw score ranks differently.
+    ranked = sorted(
+        (game for game in results if not game["already_shown"]),
+        key=lambda game: (-game.get("match_percent_raw", game["match_percent"]), -game["score"]),
+    )
     confident_ranked = [game for game in ranked if game["confidence"] != "低"]
-    if confident_ranked:
-        # Preserve the quality bar for the first batch, but keep lower-confidence
-        # related games available after a narrow priority pool is exhausted.
+    if confident_ranked and gacha:
+        # Holding low-confidence games back would let one resurface above a later
+        # page, so only the paced mode reorders around confidence.
         ranked = confident_ranked + [game for game in ranked if game["confidence"] == "低"]
     if not ranked:
         if not candidate_count:
@@ -1833,11 +2393,12 @@ def recommend(games, excluded_ids=None, evidence_use_counts=None, priority="bala
         live_top_seller_ids = get_live_top_seller_ids()
         top_seller_new_releases = [game for game in ranked if is_recent_top_seller(game)]
         other_new_releases = [game for game in ranked if is_new_release(game) and not is_recent_top_seller(game)]
-        category_ranked = top_seller_new_releases + other_new_releases
-        pool = top_seller_new_releases[:12] + other_new_releases[:12]
+        # Scores were calibrated across the full catalogue above. New-release
+        # priority only narrows candidates; it must not randomise their order.
+        category_ranked = [game for game in ranked if is_new_release(game)]
+        pool = category_ranked
         if not pool:
             raise ValueError("最近 31 天内没有更多未展示的新品。请重新开始本分类或选择其他优先级。")
-        pool = pool[:12]
     elif priority != "balanced":
         category_ranked = [game for game in ranked if is_in_category(game, {priority})]
         if not category_ranked:
@@ -1857,14 +2418,21 @@ def recommend(games, excluded_ids=None, evidence_use_counts=None, priority="bala
             # small discovery batch instead of failing the first search outright.
             pool = new_releases[:12]
         else:
-            # New releases are exploratory in balanced mode: no more than one per batch.
-            pool = established[:12] + new_releases[:6]
+            # Splitting the ranking into storefront buckets is what lets gacha
+            # mode ration new releases. The plain modes take the ranking as it is,
+            # otherwise a game held back as "new" resurfaces above later pages.
+            # Every eligible game is a possible pull. The ranks only bias the
+            # draw; they must not silently remove the lower half of the deck.
+                pool = ranked if gacha else ranked[:12]
         category_ranked = established + new_releases
     # A tag-only score favours obscure games with dense tag lists. Make sure every
     # batch can offer at least one title the gift giver is likely to recognise.
     # Weighting alone cannot surface a recognisable title that never made the pool,
     # so every batch gets more of them to choose from.
-    if not single_candidate:
+    # Mixing in new releases and recognisable titles is what gives gacha mode its
+    # variety, but it also lets a later page open higher than the previous page
+    # closed. The plain modes walk straight down the ranking instead.
+    if not single_candidate and gacha:
         pool_ids = {game["app_id"] for game in pool}
         missing = POOL_WELL_KNOWN_TARGET - sum(1 for game in pool if is_well_known(game))
         if missing > 0:
@@ -1878,11 +2446,11 @@ def recommend(games, excluded_ids=None, evidence_use_counts=None, priority="bala
     if single_candidate:
         target_count = min(1, len(pool))
     else:
-        target_count = min(2, len(pool)) if priority == "balanced" and using_new_release_fallback else (min(4, len(established) + min(1, len(new_releases))) if priority == "balanced" else min(4, len(pool)))
+        target_count = min(2, len(pool)) if priority == "balanced" and using_new_release_fallback else (min(4, len(established) + min(1, len(new_releases))) if gacha and priority == "balanced" else min(4, len(pool)))
     # A tag-only score favours obscure games with dense tag lists, so a title the
     # gift giver has actually heard of gets a better shot at every slot.
     scored_by_id = {int(game["app_id"]): game for game in results}
-    tier_floor = {name: minimum for minimum, name, _ in MATCH_RARITY_TIERS}
+    tier_floor = {name: minimum for minimum, name, _ in (GACHA_RARITY_TIERS if gacha else MATCH_RARITY_TIERS)}
 
     def cards_since(min_percent):
         count = 0
@@ -1893,8 +2461,8 @@ def recommend(games, excluded_ids=None, evidence_use_counts=None, priority="bala
         return count
 
     pity_due = []
-    if not single_candidate:
-        for tier_name, window in (("SSR", SSR_PITY_CARDS), ("SR", SR_PITY_CARDS)):
+    if gacha and not single_candidate:
+        for tier_name, window in (("UR", UR_PITY_CARDS), ("SSR", SSR_PITY_CARDS), ("SR", SR_PITY_CARDS)):
             floor = tier_floor[tier_name]
             if cards_since(floor) + target_count >= window:
                 pity_due.append(floor)
@@ -1905,6 +2473,9 @@ def recommend(games, excluded_ids=None, evidence_use_counts=None, priority="bala
                         if game["match_percent"] >= floor and game["app_id"] not in pool_ids
                     ][:2]
 
+    # How far a game's review count goes among new releases, where a few thousand
+    # in a month is already a hit and the whole ranking sits far below the
+    # catalogue-wide reference.
     def popularity_factor(game):
         reviews = game.get("review_count") or 0
         recognition = min(1.0, math.log1p(reviews) / math.log1p(well_known_review_count))
@@ -1955,13 +2526,13 @@ def recommend(games, excluded_ids=None, evidence_use_counts=None, priority="bala
         ) >= level_3_budget
 
         def acceptable(game):
-            if single_candidate:
+            if single_candidate or not gacha:
                 return True
             if level_3_full and game["label_matches"]["level_3"]:
                 return False
             if blocked_tags and (set(game["label_matches"]["level_3"]) | set(game["label_matches"]["level_2_core"])) & blocked_tags:
                 return False
-            if not pity_due:
+            if not pity_due and gacha:
                 percent = game["match_percent"]
                 if percent >= tier_floor["UR"] and len(shown_order) < UR_EARLIEST_CARD:
                     return False
@@ -1985,7 +2556,7 @@ def recommend(games, excluded_ids=None, evidence_use_counts=None, priority="bala
         view_weights = [weights[index] for index in allowed]
         well_known_indices = [index for index, game in enumerate(view) if is_well_known(game)]
         well_known_selected = sum(1 for game in selection if is_well_known(game))
-        required_well_known = MIN_WELL_KNOWN_PER_BATCH
+        required_well_known = MIN_WELL_KNOWN_PER_BATCH if gacha else 0
         # An owed tier claims a slot before anything else, and the highest owed
         # tier goes first because it also settles the lower one.
         owed = [
@@ -1999,7 +2570,7 @@ def recommend(games, excluded_ids=None, evidence_use_counts=None, priority="bala
             chosen = random.choices([view[index] for index in eligible], weights=[view_weights[index] for index in eligible], k=1)[0]
         elif well_known_indices and remaining_slots <= required_well_known - well_known_selected:
             chosen = random.choices([view[index] for index in well_known_indices], weights=[view_weights[index] for index in well_known_indices], k=1)[0]
-        elif priority == "new_releases":
+        elif priority == "new_releases" and gacha:
             selected_top_sellers = sum(game["app_id"] in new_release_top_seller_ids for game in selection)
             if selected_top_sellers == 0:
                 eligible_indices = [index for index, game in enumerate(view) if game["app_id"] in new_release_top_seller_ids]
@@ -2012,6 +2583,9 @@ def recommend(games, excluded_ids=None, evidence_use_counts=None, priority="bala
             eligible_games = [view[index] for index in eligible_indices]
             eligible_weights = [view_weights[index] for index in eligible_indices]
             chosen = random.choices(eligible_games, weights=eligible_weights, k=1)[0]
+        elif not gacha:
+            # Order by match, nudged by how well known and well liked a game is.
+            chosen = max(view, key=lambda game: (game["match_percent"], game["score"]))
         else:
             chosen = random.choices(view, weights=view_weights, k=1)[0]
         if chosen["label_matches"]["level_3"] or chosen["label_matches"]["level_2_core"] or chosen["label_matches"]["level_1"] or chosen["label_matches"]["soft_preference"]:
@@ -2034,12 +2608,14 @@ def recommend(games, excluded_ids=None, evidence_use_counts=None, priority="bala
             chosen["evidence_app_ids"] = [item["app_id"] for item in reason_evidence]
             evidence_use_counts.update(chosen["evidence_app_ids"])
         selection.append(chosen)
-        if priority == "balanced" and is_in_category(chosen, {"new_releases"}):
+        if gacha and priority == "balanced" and is_in_category(chosen, {"new_releases"}):
             new_release_count += 1
         index = pool.index(chosen)
         pool.pop(index)
         weights.pop(index)
-        if priority == "balanced" and not using_new_release_fallback and new_release_count >= 1:
+        # Rationing new releases would defer a high card to the next page, where it
+        # opens above the previous page's close. Only the paced mode can afford it.
+        if gacha and priority == "balanced" and not using_new_release_fallback and new_release_count >= 1:
             pool_and_weights = [(game, weight) for game, weight in zip(pool, weights) if not is_in_category(game, {"new_releases"})]
             pool = [game for game, _ in pool_and_weights]
             weights = [weight for _, weight in pool_and_weights]
@@ -2122,7 +2698,7 @@ def recommendations():
         active_tag_ids = [int(tag_id) for tag_id in payload.get("active_tag_ids", []) if str(tag_id).isdigit()]
         excluded_tag_ids = [int(tag_id) for tag_id in payload.get("excluded_tag_ids", []) if str(tag_id).isdigit()]
         priority = payload.get("priority", "balanced")
-        if priority not in {"balanced", "new_releases", "specials", "top_sellers"}:
+        if priority not in {"balanced", "match", "new_releases", "specials", "top_sellers", "hidden_gems"}:
             priority = "balanced"
         try:
             candidates = get_store_catalog()
@@ -2135,17 +2711,33 @@ def recommendations():
         if not candidates:
             return jsonify(error=f"预算 {format_price(min_price)} 至 {format_price(max_price)} 之间没有任何在售游戏。请放宽预算范围。"), 404
         recycled = False
+        gacha = bool(payload.get("gacha"))
+        # Match-first ignores standing entirely; the store-driven views lean on it.
+        appeal_weight = APPEAL_WEIGHT_BALANCED
+        if priority == "match" or payload.get("mode") == "match":
+            appeal_weight = APPEAL_WEIGHT_MATCH_FIRST
+        elif priority == "top_sellers":
+            appeal_weight = APPEAL_WEIGHT_TOP_SELLERS
+        elif priority == "new_releases":
+            appeal_weight = APPEAL_WEIGHT_NEW_RELEASES
+        elif priority == "hidden_gems":
+            appeal_weight = APPEAL_WEIGHT_HIDDEN_GEMS
+        # Neither the pure-taste view nor the hidden-gem view is a storefront list,
+        # so both draw on the whole catalogue.
+        pool_priority = "balanced" if priority in {"match", "hidden_gems"} else priority
         try:
             recommendations, preference_sample_size, preference_tags, applied_tag_ids, applied_excluded_tag_ids = recommend(
-                games, excluded_ids, evidence_use_counts, priority, candidates, steam_id, api_key,
-                active_tag_ids, include_preference_tags=True, excluded_tag_ids=excluded_tag_ids,
+                games, excluded_ids, evidence_use_counts, pool_priority, candidates, steam_id, api_key,
+                active_tag_ids, include_preference_tags=True, excluded_tag_ids=excluded_tag_ids, gacha=gacha,
+                appeal_weight=appeal_weight, hidden_gems=priority == "hidden_gems",
             )
         except ValueError:
             if not excluded_ids:
                 raise
             recommendations, preference_sample_size, preference_tags, applied_tag_ids, applied_excluded_tag_ids = recommend(
-                games, [], evidence_use_counts, priority, candidates, steam_id, api_key,
-                active_tag_ids, include_preference_tags=True, excluded_tag_ids=excluded_tag_ids,
+                games, [], evidence_use_counts, pool_priority, candidates, steam_id, api_key,
+                active_tag_ids, include_preference_tags=True, excluded_tag_ids=excluded_tag_ids, gacha=gacha,
+                appeal_weight=appeal_weight,
             )
             recycled = True
         with ThreadPoolExecutor(max_workers=2) as executor:
@@ -2298,19 +2890,19 @@ def seed_recommendations():
             if str(app_id).isdigit() and isinstance(count, int) and count >= 0
         }
         active_tag_ids = [int(tag_id) for tag_id in payload.get("active_tag_ids", []) if str(tag_id).isdigit()]
-        excluded_tag_ids = [int(tag_id) for tag_id in payload.get("excluded_tag_ids", []) if str(tag_id).isdigit()]
+        excluded_tag_ids = [int(tag_id) for tag_id in payload.get("excluded_tag_ids", []) if str(tag_id).isdigit()]; priority = payload.get("priority", "balanced"); appeal_weight = {"match": APPEAL_WEIGHT_MATCH_FIRST, "top_sellers": APPEAL_WEIGHT_TOP_SELLERS, "new_releases": APPEAL_WEIGHT_NEW_RELEASES, "hidden_gems": APPEAL_WEIGHT_HIDDEN_GEMS}.get(priority, APPEAL_WEIGHT_BALANCED); pool_priority = "balanced" if priority in {"match", "hidden_gems"} else priority
         recycled = False
         try:
             recommendations, sample_size, preference_tags, applied_tag_ids, applied_excluded_tag_ids = recommend(
-                target_games, excluded_ids, evidence_use_counts, "balanced", candidates, target_id, api_key,
-                active_tag_ids, include_preference_tags=True, excluded_tag_ids=excluded_tag_ids,
+                target_games, excluded_ids, evidence_use_counts, pool_priority, candidates, target_id, api_key,
+                active_tag_ids, include_preference_tags=True, excluded_tag_ids=excluded_tag_ids, appeal_weight=appeal_weight, hidden_gems=priority == "hidden_gems",
             )
         except ValueError:
             if not excluded_ids:
                 raise
             recommendations, sample_size, preference_tags, applied_tag_ids, applied_excluded_tag_ids = recommend(
-                target_games, [], evidence_use_counts, "balanced", candidates, target_id, api_key,
-                active_tag_ids, include_preference_tags=True, excluded_tag_ids=excluded_tag_ids,
+                target_games, [], evidence_use_counts, pool_priority, candidates, target_id, api_key,
+                active_tag_ids, include_preference_tags=True, excluded_tag_ids=excluded_tag_ids, appeal_weight=appeal_weight, hidden_gems=priority == "hidden_gems",
             )
             recycled = True
         with ThreadPoolExecutor(max_workers=2) as executor:

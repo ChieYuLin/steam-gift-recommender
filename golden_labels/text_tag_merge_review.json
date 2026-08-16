@@ -1,0 +1,1768 @@
+{
+  "merge_candidates": [
+    {
+      "tag": "Local Multiplayer",
+      "chinese": "本地多人",
+      "game_count": 173,
+      "merge_into": "Multiplayer",
+      "type": "subtype",
+      "reason": "本地多人是多人游戏的场景，不应与多人重复计分",
+      "currently_managed": false
+    },
+    {
+      "tag": "Asynchronous Multiplayer",
+      "chinese": "异步多人",
+      "game_count": 21,
+      "merge_into": "Multiplayer",
+      "type": "subtype",
+      "reason": "异步多人是多人游戏的联网形式",
+      "currently_managed": false
+    },
+    {
+      "tag": "Massively Multiplayer",
+      "chinese": "大型多人在线",
+      "game_count": 40,
+      "merge_into": "Multiplayer",
+      "type": "subtype",
+      "reason": "大型多人在线是多人游戏的规模形式",
+      "currently_managed": false
+    },
+    {
+      "tag": "Party",
+      "chinese": "社交聚会",
+      "game_count": 29,
+      "merge_into": "Party Game",
+      "type": "alias",
+      "reason": "社交聚会是 Party Game 的简写",
+      "currently_managed": false
+    },
+    {
+      "tag": "Naval",
+      "chinese": "海军",
+      "game_count": 29,
+      "merge_into": "Naval Combat",
+      "type": "subtype",
+      "reason": "海军是海战玩法的更泛表述",
+      "currently_managed": false
+    },
+    {
+      "tag": "Party-Based RPG",
+      "chinese": "团队角色扮演",
+      "game_count": 93,
+      "merge_into": "RPG",
+      "type": "subtype",
+      "reason": "团队角色扮演是角色扮演的队伍结构",
+      "currently_managed": false
+    },
+    {
+      "tag": "2D Platformer",
+      "chinese": "2D 平台",
+      "game_count": 247,
+      "merge_into": "Platformer",
+      "type": "subtype",
+      "reason": "二维平台是平台游戏的画面维度",
+      "currently_managed": false
+    },
+    {
+      "tag": "3D Platformer",
+      "chinese": "3D 平台",
+      "game_count": 137,
+      "merge_into": "Platformer",
+      "type": "subtype",
+      "reason": "三维平台是平台游戏的画面维度",
+      "currently_managed": false
+    },
+    {
+      "tag": "Turn-Based Combat",
+      "chinese": "回合制战斗",
+      "game_count": 213,
+      "merge_into": "Turn-Based",
+      "type": "subtype",
+      "reason": "回合制战斗是回合制节奏，不与回合制战略混同",
+      "currently_managed": false
+    },
+    {
+      "tag": "Real-Time with Pause",
+      "chinese": "即时含暂停",
+      "game_count": 39,
+      "merge_into": "Strategic Command",
+      "type": "merged",
+      "reason": "即时战略、即时战术、大战略合并为战略指挥",
+      "currently_managed": false
+    },
+    {
+      "tag": "Real Time Tactics",
+      "chinese": "即时战术",
+      "game_count": 81,
+      "merge_into": "Strategic Command",
+      "type": "merged",
+      "reason": "即时战略、即时战术、大战略合并为战略指挥",
+      "currently_managed": false
+    },
+    {
+      "tag": "Grand Strategy",
+      "chinese": "大战略",
+      "game_count": 58,
+      "merge_into": "Strategic Command",
+      "type": "merged",
+      "reason": "即时战略、即时战术、大战略合并为战略指挥",
+      "currently_managed": false
+    }
+  ],
+  "keep_separate": [
+    {
+      "left": "Turn-Based Strategy",
+      "right": "Turn-Based Combat",
+      "left_game_count": 212,
+      "right_game_count": 213,
+      "reason": "回合制战略偏决策/经营；回合制战斗偏战斗节奏，共现约50%，不安全合并"
+    },
+    {
+      "left": "Turn-Based Tactics",
+      "right": "Turn-Based Combat",
+      "left_game_count": 183,
+      "right_game_count": 213,
+      "reason": "回合制战术是更具体的策略玩法，不与纯回合制战斗合并"
+    },
+    {
+      "left": "Tactical",
+      "right": "Tactical RPG",
+      "left_game_count": 244,
+      "right_game_count": 80,
+      "reason": "战术标签覆盖范围远大于战术 RPG，不安全合并"
+    },
+    {
+      "left": "Horror",
+      "right": "Survival Horror",
+      "left_game_count": 455,
+      "right_game_count": 170,
+      "reason": "恐怖与生存恐怖不等价"
+    },
+    {
+      "left": "Horror",
+      "right": "Psychological Horror",
+      "left_game_count": 455,
+      "right_game_count": 376,
+      "reason": "恐怖与心理恐怖不等价"
+    },
+    {
+      "left": "Cartoon",
+      "right": "Cartoony",
+      "left_game_count": 158,
+      "right_game_count": 283,
+      "reason": "低共现，卡通主题与卡通风格不稳定对应"
+    },
+    {
+      "left": "Resource Management",
+      "right": "Management",
+      "left_game_count": 266,
+      "right_game_count": 376,
+      "reason": "资源管理是管理玩法子类，但覆盖过宽，建议独立审核"
+    },
+    {
+      "left": "Time Management",
+      "right": "Management",
+      "left_game_count": 108,
+      "right_game_count": 376,
+      "reason": "时间管理是特定玩法循环，建议独立审核"
+    },
+    {
+      "left": "First-Person",
+      "right": "FPS",
+      "left_game_count": 666,
+      "right_game_count": 281,
+      "reason": "第一人称不等于第一人称射击"
+    },
+    {
+      "left": "Third Person",
+      "right": "Third-Person Shooter",
+      "left_game_count": 433,
+      "right_game_count": 107,
+      "reason": "第三人称不等于第三人称射击"
+    }
+  ],
+  "all_unmanaged_review": [
+    {
+      "tag": "Singleplayer",
+      "chinese": "单人",
+      "game_count": 2734,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Indie",
+      "chinese": "独立",
+      "game_count": 1618,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "2D",
+      "chinese": "2D",
+      "game_count": 1268,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "3D",
+      "chinese": "3D",
+      "game_count": 839,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Funny",
+      "chinese": "欢乐",
+      "game_count": 677,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "First-Person",
+      "chinese": "第一人称",
+      "game_count": 666,
+      "action": "keep_separate",
+      "reason": "第一人称不等于第一人称射击"
+    },
+    {
+      "tag": "Relaxing",
+      "chinese": "放松",
+      "game_count": 646,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Family Friendly",
+      "chinese": "阖家",
+      "game_count": 470,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Horror",
+      "chinese": "恐怖",
+      "game_count": 455,
+      "action": "keep_separate",
+      "reason": "恐怖与生存恐怖不等价"
+    },
+    {
+      "tag": "Third Person",
+      "chinese": "第三人称",
+      "game_count": 433,
+      "action": "keep_separate",
+      "reason": "第三人称不等于第三人称射击"
+    },
+    {
+      "tag": "Great Soundtrack",
+      "chinese": "好评原声音轨",
+      "game_count": 408,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Realistic",
+      "chinese": "拟真",
+      "game_count": 395,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Controller",
+      "chinese": "控制器",
+      "game_count": 375,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Sexual Content",
+      "chinese": "色情内容",
+      "game_count": 363,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Difficult",
+      "chinese": "低容错",
+      "game_count": 342,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Mystery",
+      "chinese": "悬疑",
+      "game_count": 342,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Arcade",
+      "chinese": "街机",
+      "game_count": 329,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Early Access",
+      "chinese": "抢先体验",
+      "game_count": 329,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Combat",
+      "chinese": "战斗",
+      "game_count": 323,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Character Customization",
+      "chinese": "角色自定义",
+      "game_count": 313,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Immersive Sim",
+      "chinese": "沉浸式模拟",
+      "game_count": 312,
+      "action": "review_as_preference",
+      "reason": "沉浸式模拟是明确玩法流派，建议独立定级"
+    },
+    {
+      "tag": "Physics",
+      "chinese": "物理",
+      "game_count": 312,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Point & Click",
+      "chinese": "指向点击",
+      "game_count": 296,
+      "action": "review_as_preference",
+      "reason": "点击冒险是明确交互玩法，建议独立定级"
+    },
+    {
+      "tag": "Top-Down",
+      "chinese": "俯视",
+      "game_count": 277,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Resource Management",
+      "chinese": "资源管理",
+      "game_count": 266,
+      "action": "keep_separate",
+      "reason": "资源管理是管理玩法子类，但覆盖过宽，建议独立审核"
+    },
+    {
+      "tag": "Violent",
+      "chinese": "暴力",
+      "game_count": 262,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Gore",
+      "chinese": "鲜血",
+      "game_count": 252,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "2D Platformer",
+      "chinese": "2D 平台",
+      "game_count": 247,
+      "action": "merge",
+      "reason": "二维平台是平台游戏的画面维度"
+    },
+    {
+      "tag": "PvE",
+      "chinese": "玩家对战环境",
+      "game_count": 244,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Tactical",
+      "chinese": "战术",
+      "game_count": 244,
+      "action": "keep_separate",
+      "reason": "战术标签覆盖范围远大于战术 RPG，不安全合并"
+    },
+    {
+      "tag": "Nudity",
+      "chinese": "裸露",
+      "game_count": 233,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Minimalist",
+      "chinese": "极简主义",
+      "game_count": 229,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Cozy",
+      "chinese": "温馨惬意",
+      "game_count": 218,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Economy",
+      "chinese": "经济",
+      "game_count": 218,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Turn-Based Combat",
+      "chinese": "回合制战斗",
+      "game_count": 213,
+      "action": "merge",
+      "reason": "回合制战斗是回合制节奏，不与回合制战略混同"
+    },
+    {
+      "tag": "Choose Your Own Adventure",
+      "chinese": "自选历险体验",
+      "game_count": 203,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Linear",
+      "chinese": "线性",
+      "game_count": 199,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Hack and Slash",
+      "chinese": "砍杀",
+      "game_count": 191,
+      "action": "review_as_preference",
+      "reason": "砍杀是明确战斗取向，建议独立定级"
+    },
+    {
+      "tag": "Procedural Generation",
+      "chinese": "程序生成",
+      "game_count": 191,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Magic",
+      "chinese": "魔法",
+      "game_count": 179,
+      "action": "review_as_preference",
+      "reason": "魔法是高频题材，建议独立定级"
+    },
+    {
+      "tag": "Isometric",
+      "chinese": "等角视角",
+      "game_count": 177,
+      "action": "review_as_preference",
+      "reason": "等角视角对部分玩家是显著视觉/操作偏好"
+    },
+    {
+      "tag": "Local Multiplayer",
+      "chinese": "本地多人",
+      "game_count": 173,
+      "action": "merge",
+      "reason": "本地多人是多人游戏的场景，不应与多人重复计分"
+    },
+    {
+      "tag": "LGBTQ+",
+      "chinese": "LGBTQ+",
+      "game_count": 170,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "War",
+      "chinese": "战争",
+      "game_count": 160,
+      "action": "review_as_preference",
+      "reason": "战争题材与军事相关但不等价，建议独立定级"
+    },
+    {
+      "tag": "Cartoon",
+      "chinese": "卡通",
+      "game_count": 158,
+      "action": "keep_separate",
+      "reason": "低共现，卡通主题与卡通风格不稳定对应"
+    },
+    {
+      "tag": "Dungeon Crawler",
+      "chinese": "迷宫探索",
+      "game_count": 155,
+      "action": "review_as_preference",
+      "reason": "地牢探索是明确玩法，建议独立定级"
+    },
+    {
+      "tag": "Side Scroller",
+      "chinese": "横向滚屏",
+      "game_count": 149,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Lore-Rich",
+      "chinese": "故事架构丰富",
+      "game_count": 140,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Hentai",
+      "chinese": "动漫色情",
+      "game_count": 139,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Collectathon",
+      "chinese": "收集马拉松",
+      "game_count": 138,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "3D Platformer",
+      "chinese": "3D 平台",
+      "game_count": 137,
+      "action": "merge",
+      "reason": "三维平台是平台游戏的画面维度"
+    },
+    {
+      "tag": "Detective",
+      "chinese": "推理",
+      "game_count": 134,
+      "action": "review_as_preference",
+      "reason": "侦探是明确叙事/推理取向，建议独立定级"
+    },
+    {
+      "tag": "Old School",
+      "chinese": "老式",
+      "game_count": 130,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Futuristic",
+      "chinese": "未来",
+      "game_count": 127,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Walking Simulator",
+      "chinese": "步行模拟",
+      "game_count": 127,
+      "action": "review_as_preference",
+      "reason": "步行模拟是明确叙事玩法，建议独立定级"
+    },
+    {
+      "tag": "1990's",
+      "chinese": "90 年代",
+      "game_count": 126,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Moddable",
+      "chinese": "可模组化",
+      "game_count": 123,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Investigation",
+      "chinese": "调查",
+      "game_count": 120,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "2.5D",
+      "chinese": "2.5D",
+      "game_count": 114,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Short",
+      "chinese": "短篇",
+      "game_count": 111,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Time Management",
+      "chinese": "时间管理",
+      "game_count": 108,
+      "action": "keep_separate",
+      "reason": "时间管理是特定玩法循环，建议独立审核"
+    },
+    {
+      "tag": "Dialogue Heavy",
+      "chinese": "对话丰富",
+      "game_count": 103,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Education",
+      "chinese": "教育",
+      "game_count": 99,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "RTS",
+      "chinese": "即时战略",
+      "game_count": 99,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Score Attack",
+      "chinese": "竞分",
+      "game_count": 98,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Crime",
+      "chinese": "犯罪",
+      "game_count": 97,
+      "action": "review_as_preference",
+      "reason": "犯罪题材可作为软偏好，建议审核"
+    },
+    {
+      "tag": "Fast-Paced",
+      "chinese": "快节奏",
+      "game_count": 95,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Party-Based RPG",
+      "chinese": "团队角色扮演",
+      "game_count": 93,
+      "action": "merge",
+      "reason": "团队角色扮演是角色扮演的队伍结构"
+    },
+    {
+      "tag": "Shoot 'Em Up",
+      "chinese": "清版射击",
+      "game_count": 93,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Modern",
+      "chinese": "现代",
+      "game_count": 92,
+      "action": "review_as_preference",
+      "reason": "现代题材可作为软偏好，建议审核"
+    },
+    {
+      "tag": "VR",
+      "chinese": "虚拟现实",
+      "game_count": 87,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Loot",
+      "chinese": "刷宝",
+      "game_count": 86,
+      "action": "review_as_preference",
+      "reason": "刷宝是明确奖励循环，建议独立定级"
+    },
+    {
+      "tag": "Abstract",
+      "chinese": "抽象",
+      "game_count": 85,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Real Time Tactics",
+      "chinese": "即时战术",
+      "game_count": 81,
+      "action": "merge",
+      "reason": "即时战略、即时战术、大战略合并为战略指挥"
+    },
+    {
+      "tag": "Nonlinear",
+      "chinese": "非线性",
+      "game_count": 80,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Wargame",
+      "chinese": "战争游戏",
+      "game_count": 79,
+      "action": "review_as_preference",
+      "reason": "战争游戏是军事题材的具体玩法，建议独立定级"
+    },
+    {
+      "tag": "Artificial Intelligence",
+      "chinese": "人工智能",
+      "game_count": 78,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Level Editor",
+      "chinese": "关卡编辑",
+      "game_count": 77,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Capitalism",
+      "chinese": "资本主义",
+      "game_count": 76,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Classic",
+      "chinese": "经典",
+      "game_count": 73,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "1980s",
+      "chinese": "80 年代",
+      "game_count": 71,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "4 Player Local",
+      "chinese": "4 人本地",
+      "game_count": 66,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Destruction",
+      "chinese": "破坏",
+      "game_count": 66,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Perma Death",
+      "chinese": "永久死亡",
+      "game_count": 65,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Team-Based",
+      "chinese": "团队导向",
+      "game_count": 64,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Design & Illustration",
+      "chinese": "设计与插画",
+      "game_count": 62,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Parkour",
+      "chinese": "跑酷",
+      "game_count": 61,
+      "action": "review_as_preference",
+      "reason": "跑酷是明确动作玩法，建议独立定级"
+    },
+    {
+      "tag": "Split Screen",
+      "chinese": "分屏",
+      "game_count": 60,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Soundtrack",
+      "chinese": "原声音轨",
+      "game_count": 59,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Grand Strategy",
+      "chinese": "大战略",
+      "game_count": 58,
+      "action": "merge",
+      "reason": "即时战略、即时战术、大战略合并为战略指挥"
+    },
+    {
+      "tag": "Tutorial",
+      "chinese": "教程",
+      "game_count": 56,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Utilities",
+      "chinese": "实用工具",
+      "game_count": 53,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Competitive",
+      "chinese": "竞技",
+      "game_count": 51,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Experimental",
+      "chinese": "试验性",
+      "game_count": 51,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Spectacle fighter",
+      "chinese": "华丽格斗",
+      "game_count": 47,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Swordplay",
+      "chinese": "剑术",
+      "game_count": 47,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Trading",
+      "chinese": "贸易",
+      "game_count": 47,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Grid-Based Movement",
+      "chinese": "网格导向动作",
+      "game_count": 46,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Mining",
+      "chinese": "采矿",
+      "game_count": 45,
+      "action": "review_as_preference",
+      "reason": "采矿是明确循环玩法，建议独立定级"
+    },
+    {
+      "tag": "Agriculture",
+      "chinese": "农业",
+      "game_count": 41,
+      "action": "review_as_preference",
+      "reason": "农业与农场模拟相关但不完全等价，建议审核"
+    },
+    {
+      "tag": "Vehicular Combat",
+      "chinese": "车辆作战",
+      "game_count": 41,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "eSports",
+      "chinese": "电竞",
+      "game_count": 41,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Massively Multiplayer",
+      "chinese": "大型多人在线",
+      "game_count": 40,
+      "action": "merge",
+      "reason": "大型多人在线是多人游戏的规模形式"
+    },
+    {
+      "tag": "Noir",
+      "chinese": "黑色",
+      "game_count": 39,
+      "action": "review_as_preference",
+      "reason": "黑色电影题材可作为软偏好，建议审核"
+    },
+    {
+      "tag": "Real-Time with Pause",
+      "chinese": "即时含暂停",
+      "game_count": 39,
+      "action": "merge",
+      "reason": "即时战略、即时战术、大战略合并为战略指挥"
+    },
+    {
+      "tag": "Gun Customization",
+      "chinese": "枪械改装",
+      "game_count": 38,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Remake",
+      "chinese": "重制",
+      "game_count": 38,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Mystery Dungeon",
+      "chinese": "不可思议迷宫",
+      "game_count": 36,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Class-Based",
+      "chinese": "职业导向",
+      "game_count": 34,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Software",
+      "chinese": "软件",
+      "game_count": 34,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Transportation",
+      "chinese": "交通运输",
+      "game_count": 34,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Political Sim",
+      "chinese": "政治模拟",
+      "game_count": 33,
+      "action": "review_as_preference",
+      "reason": "政治模拟是明确策略子类，建议独立定级"
+    },
+    {
+      "tag": "Conspiracy",
+      "chinese": "阴谋",
+      "game_count": 32,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Heist",
+      "chinese": "劫掠",
+      "game_count": 31,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Quick-Time Events",
+      "chinese": "快速反应事件",
+      "game_count": 31,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Hex Grid",
+      "chinese": "六角格棋盘",
+      "game_count": 30,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Organizing",
+      "chinese": "整理",
+      "game_count": 30,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Runner",
+      "chinese": "奔跑",
+      "game_count": 30,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Desktop Companion",
+      "chinese": "桌面伴侣",
+      "game_count": 29,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Mouse Only",
+      "chinese": "仅鼠标",
+      "game_count": 29,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Naval",
+      "chinese": "海军",
+      "game_count": 29,
+      "action": "merge",
+      "reason": "海军是海战玩法的更泛表述"
+    },
+    {
+      "tag": "Party",
+      "chinese": "社交聚会",
+      "game_count": 29,
+      "action": "merge",
+      "reason": "社交聚会是 Party Game 的简写"
+    },
+    {
+      "tag": "Decorating",
+      "chinese": "装饰",
+      "game_count": 28,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Ninja",
+      "chinese": "忍者",
+      "game_count": 28,
+      "action": "review_as_preference",
+      "reason": "忍者题材可作为软偏好，建议审核"
+    },
+    {
+      "tag": "Minigames",
+      "chinese": "小游戏",
+      "game_count": 27,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Immersive",
+      "chinese": "沉浸式",
+      "game_count": 26,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Hacking",
+      "chinese": "黑客",
+      "game_count": 25,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Tanks",
+      "chinese": "坦克",
+      "game_count": 25,
+      "action": "review_as_preference",
+      "reason": "坦克是军事题材细分，建议审核"
+    },
+    {
+      "tag": "Voxel",
+      "chinese": "体素",
+      "game_count": 25,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Diplomacy",
+      "chinese": "外交",
+      "game_count": 24,
+      "action": "review_as_preference",
+      "reason": "外交是明确策略维度，建议独立定级"
+    },
+    {
+      "tag": "Cleaning",
+      "chinese": "清洁",
+      "game_count": 23,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Touch-Friendly",
+      "chinese": "触控",
+      "game_count": 23,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Typing",
+      "chinese": "打字",
+      "game_count": 22,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Asynchronous Multiplayer",
+      "chinese": "异步多人",
+      "game_count": 21,
+      "action": "merge",
+      "reason": "异步多人是多人游戏的联网形式"
+    },
+    {
+      "tag": "Faith",
+      "chinese": "信仰",
+      "game_count": 21,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "God Game",
+      "chinese": "上帝模拟",
+      "game_count": 21,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Sequel",
+      "chinese": "续作",
+      "game_count": 21,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Solitaire",
+      "chinese": "纸牌",
+      "game_count": 21,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Underground",
+      "chinese": "地下",
+      "game_count": 21,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Bullet Time",
+      "chinese": "子弹时间",
+      "game_count": 19,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Character Action Game",
+      "chinese": "角色动作",
+      "game_count": 19,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Combat Racing",
+      "chinese": "战斗竞速",
+      "game_count": 19,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Programming",
+      "chinese": "编程",
+      "game_count": 19,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Dynamic Narration",
+      "chinese": "动态旁白",
+      "game_count": 18,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Game Development",
+      "chinese": "游戏开发",
+      "game_count": 18,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Addictive",
+      "chinese": "欲罢不能",
+      "game_count": 17,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Dwarves",
+      "chinese": "矮人",
+      "game_count": 17,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Epic",
+      "chinese": "史诗级",
+      "game_count": 17,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Villain Protagonist",
+      "chinese": "恶人主角",
+      "game_count": 17,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Horses",
+      "chinese": "马匹",
+      "game_count": 16,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Nostalgia",
+      "chinese": "怀旧",
+      "game_count": 16,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Animation & Modeling",
+      "chinese": "动画制作和建模",
+      "game_count": 15,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Free to Play",
+      "chinese": "免费开玩",
+      "game_count": 15,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Photo Editing",
+      "chinese": "照片编辑",
+      "game_count": 15,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "6DOF",
+      "chinese": "六自由度",
+      "game_count": 14,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Pinball",
+      "chinese": "弹球",
+      "game_count": 14,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Samurai",
+      "chinese": "武士",
+      "game_count": 14,
+      "action": "review_as_preference",
+      "reason": "武士题材可作为软偏好，建议审核"
+    },
+    {
+      "tag": "Snow",
+      "chinese": "雪",
+      "game_count": 14,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Time Attack",
+      "chinese": "时间竞速",
+      "game_count": 12,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Audio Production",
+      "chinese": "音频制作",
+      "game_count": 11,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Cult",
+      "chinese": "邪教",
+      "game_count": 10,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Espionage",
+      "chinese": "谍战",
+      "game_count": 10,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Music-Based Procedural Generation",
+      "chinese": "基于音乐的程序生成",
+      "game_count": 10,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Mod",
+      "chinese": "模组",
+      "game_count": 9,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Silent Protagonist",
+      "chinese": "无声主角",
+      "game_count": 9,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Skateboarding",
+      "chinese": "滑板",
+      "game_count": 9,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Sniper",
+      "chinese": "狙击手",
+      "game_count": 9,
+      "action": "review_as_preference",
+      "reason": "狙击是射击子类，建议审核"
+    },
+    {
+      "tag": "Bikes",
+      "chinese": "自行车",
+      "game_count": 8,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Dice",
+      "chinese": "骰子",
+      "game_count": 8,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "MOBA",
+      "chinese": "多人在线战术竞技",
+      "game_count": 8,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Offroad",
+      "chinese": "越野",
+      "game_count": 8,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Transhumanism",
+      "chinese": "超人类主义",
+      "game_count": 8,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Video Production",
+      "chinese": "视频制作",
+      "game_count": 8,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Foxes",
+      "chinese": "狐狸",
+      "game_count": 7,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Motorbike",
+      "chinese": "摩托车",
+      "game_count": 7,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Musou",
+      "chinese": "无双",
+      "game_count": 7,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Birds",
+      "chinese": "鸟",
+      "game_count": 6,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Electronic Music",
+      "chinese": "电子音乐",
+      "game_count": 6,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Golf",
+      "chinese": "高尔夫",
+      "game_count": 6,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Software Training",
+      "chinese": "软件培训",
+      "game_count": 6,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "TrackIR",
+      "chinese": "TrackIR",
+      "game_count": 6,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Archery",
+      "chinese": "射箭",
+      "game_count": 5,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Capybaras",
+      "chinese": "水豚",
+      "game_count": 5,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Cycling",
+      "chinese": "骑车",
+      "game_count": 5,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Elves",
+      "chinese": "精灵",
+      "game_count": 5,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Gaming",
+      "chinese": "游戏相关",
+      "game_count": 5,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Mini Golf",
+      "chinese": "迷你高尔夫",
+      "game_count": 5,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "On-Rails Shooter",
+      "chinese": "轨道射击",
+      "game_count": 5,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Skating",
+      "chinese": "滑行",
+      "game_count": 5,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Snowboarding",
+      "chinese": "单板滑雪",
+      "game_count": 5,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Tennis",
+      "chinese": "网球",
+      "game_count": 5,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Trivia",
+      "chinese": "益智问答",
+      "game_count": 5,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Wrestling",
+      "chinese": "摔角",
+      "game_count": 5,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "BMX",
+      "chinese": "自行车越野",
+      "game_count": 4,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Billiards",
+      "chinese": "台球",
+      "game_count": 4,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Bowling",
+      "chinese": "保龄球",
+      "game_count": 4,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Boxing",
+      "chinese": "拳击",
+      "game_count": 4,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Football (American)",
+      "chinese": "美式橄榄球",
+      "game_count": 4,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Hobby Sim",
+      "chinese": "爱好模拟",
+      "game_count": 4,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Language Learning",
+      "chinese": "语言学习",
+      "game_count": 4,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Mars",
+      "chinese": "火星",
+      "game_count": 4,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Skiing",
+      "chinese": "滑雪",
+      "game_count": 4,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Spelling",
+      "chinese": "拼字",
+      "game_count": 4,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Asymmetric VR",
+      "chinese": "非对称 VR",
+      "game_count": 3,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Falling Blocks",
+      "chinese": "下落方块",
+      "game_count": 3,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Motocross",
+      "chinese": "摩托车越野",
+      "game_count": 3,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Reboot",
+      "chinese": "重启",
+      "game_count": 3,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Rock Music",
+      "chinese": "摇滚乐",
+      "game_count": 3,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Spaceships",
+      "chinese": "太空飞船",
+      "game_count": 3,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Voice Control",
+      "chinese": "声控",
+      "game_count": 3,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Wolves",
+      "chinese": "狼",
+      "game_count": 3,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Zoo",
+      "chinese": "动物园",
+      "game_count": 3,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "ATV",
+      "chinese": "ATV",
+      "game_count": 2,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Baseball",
+      "chinese": "棒球",
+      "game_count": 2,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Boss Rush",
+      "chinese": "Boss Rush",
+      "game_count": 2,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Instrumental Music",
+      "chinese": "器乐",
+      "game_count": 2,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Intentionally Awkward Controls",
+      "chinese": "蓄意操控困难",
+      "game_count": 2,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Jump Scare",
+      "chinese": "突发惊吓",
+      "game_count": 2,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Werewolves",
+      "chinese": "狼人",
+      "game_count": 2,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "360 Video",
+      "chinese": "360 全景视频",
+      "game_count": 1,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "8-bit Music",
+      "chinese": "8-bit 音乐",
+      "game_count": 1,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Benchmark",
+      "chinese": "标杆测试",
+      "game_count": 1,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Hardware",
+      "chinese": "硬件",
+      "game_count": 1,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Lemmings",
+      "chinese": "旅鼠",
+      "game_count": 1,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Snooker",
+      "chinese": "斯诺克",
+      "game_count": 1,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    },
+    {
+      "tag": "Volleyball",
+      "chinese": "排球",
+      "game_count": 1,
+      "action": "neutral",
+      "reason": "通用属性、技术/商店元数据或内容提示；默认不作为偏好加分"
+    }
+  ]
+}

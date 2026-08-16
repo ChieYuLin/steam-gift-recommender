@@ -1,0 +1,38 @@
+{
+  "_comment": "Tags Steam does not have. Ids start at 9000001 so they cannot collide with a real Steam tag id. Membership is hand-picked; add an app_id to a list and the tag applies everywhere, whether the game is in the store catalogue or in someone's library.",
+  "tags": {
+    "9000001": {
+      "name": "类塞尔达",
+      "app_ids": [
+        553420,
+        894020,
+        446810,
+        1747830,
+        339200,
+        1622710,
+        368340,
+        2221920
+      ]
+    },
+    "9000002": {
+      "name": "类宝可梦",
+      "app_ids": [
+        1623730,
+        814370,
+        1321440,
+        1218210,
+        1196630,
+        745920,
+        1042550,
+        1984270,
+        830370
+      ]
+    },
+    "615955": {
+      "name": "挂机游戏",
+      "app_ids": [
+        2113850
+      ]
+    }
+  }
+}
